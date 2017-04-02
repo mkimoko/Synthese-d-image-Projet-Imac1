@@ -1,6 +1,10 @@
 #ifndef __GEOMETRY__H
 #define __GEOMETRY__H
 
+#include <math.h>
+#define PI 3.14159265
+#define SEGMENTS 1024
+
 /** STRUCTURES **/
 
 typedef struct
