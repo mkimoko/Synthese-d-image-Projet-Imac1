@@ -3,7 +3,6 @@
 
 #define SEGMENTS 128
 
-#include "../../src/geometry/geometry.c"
 
 /** STRUCTURES **/
 

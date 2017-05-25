@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "geometry/geometry.c"
 #include "element/balle.c"
+#include "element/barre.c"
 
 #define MYSCALE 0.05
 
@@ -36,10 +38,24 @@ int main(int argc, char** argv) {
   /* Titre de la fenêtre */
   SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL);
 
+  /********** Balle*******/
   Point2D position = PointXY(0.9,0);
   Vector2D direction = VectorXY(0.8,0.15);
   Color3f color = ColorRGB(255,255,255);
   Balles balles = BallFabrik(position, direction, color); 
+
+  /***********************BARRE***********************/
+
+  Point2D p1 = PointXY(0.2/MYSCALE,-0.85/MYSCALE);
+  Point2D p2 = PointXY(-0.2/MYSCALE,-0.85/MYSCALE);
+  Point2D p3 = PointXY(0.2/MYSCALE,-0.9/MYSCALE);
+  Point2D p4 = PointXY(-0.2/MYSCALE,-0.9/MYSCALE);
+
+  Vector2D d = VectorXY(1,0);
+  Color3f color2 = ColorRGB(255,255,255);
+
+  Barres barre = BarreFabrik(p1,p2,p3,p4,d,color2);
+  int boolean = 0; 
   
   /* Boucle d'affichage */
   int loop = 1;    
@@ -59,6 +75,15 @@ int main(int argc, char** argv) {
     limiteRepere(balles, 1/MYSCALE);
     glPushMatrix();
 
+    /* ********************MATRICE DE LA BARRE********************* */
+    glMatrixMode(GL_MODELVIEW);  
+    glLoadIdentity();
+    glScalef(MYSCALE, MYSCALE, 1);
+    drawBarre(barre);
+    moveBarre(barre, boolean);
+    glPushMatrix();
+
+
     /* Echange du front et du back buffer : mise à jour de la fenêtre */
     SDL_GL_SwapBuffers();
     
@@ -75,28 +100,44 @@ int main(int argc, char** argv) {
       switch(e.type) {
         /* Clic souris */
         case SDL_MOUSEBUTTONUP:
-          printf("clic en (%d, %d)\n", e.button.x, e.button.y);
-          int r = (e.button.x)/255;
-          int g = (e.button.y)/255;
-          int b = 0;
-
-          glClearColor(r,g,b,1);
+          
           break;
 
-          case SDL_MOUSEMOTION:
-          printf("la souris passe en  (%d, %d)\n", e.button.x, e.button.y);
-          r = (e.button.x)/255;
-          g = (e.button.y)/255;
-          b = 0;
-
-          glClearColor(r,g,b,1);
+          case SDL_MOUSEMOTION: 
+          
           break;
 
 
           
         /* Touche clavier */
         case SDL_KEYDOWN:
-          printf("touche pressée (code = %d)\n", e.key.keysym.sym);
+
+          if( e.key.keysym.sym == SDLK_LEFT){
+            if (limiteTerrain(barre->p1, barre->p2,1/MYSCALE) != 2)
+            {
+              boolean = 1;
+              barre->direction.x = -10;
+              moveBarre(barre, boolean);
+              barre->p1 = Translation(barre->p1, MultVector(barre->direction, MYSCALE) );
+              barre->p2 = Translation(barre->p2, MultVector(barre->direction, MYSCALE) );
+              barre->p3 = Translation(barre->p3, MultVector(barre->direction, MYSCALE) );
+              barre->p4 = Translation(barre->p4, MultVector(barre->direction, MYSCALE) );
+            } 
+          }
+
+          if( e.key.keysym.sym == SDLK_RIGHT){
+            if (limiteTerrain(barre->p1, barre->p2,1/MYSCALE) != 1 )
+            {
+              boolean = 1;
+              barre->direction.x = 10;
+              moveBarre(barre, boolean);
+              barre->p1 = Translation(barre->p1, MultVector(barre->direction, MYSCALE) );
+              barre->p2 = Translation(barre->p2, MultVector(barre->direction, MYSCALE) );
+              barre->p3 = Translation(barre->p3, MultVector(barre->direction, MYSCALE) );
+              barre->p4 = Translation(barre->p4, MultVector(barre->direction, MYSCALE) );
+            }
+            
+          }
           if( e.key.keysym.sym == SDLK_q)
             SDL_Quit();
           break;

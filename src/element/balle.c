@@ -19,7 +19,6 @@ Balles BallFabrik(Point2D position, Vector2D direction, Color3f color){
 }
 
 void drawBall(Balles ball){
-	/** Dessine un cercle (plein ou non) de rayon 0.5 et centré en (0, 0). **/
   int i;
  
   glBegin(GL_TRIANGLE_FAN);
@@ -41,11 +40,5 @@ void limiteRepere(Balles balles, float limit){
 	{
 		balles->direction.x = balles->direction.x * (-1);
 	}
-
-		
-		/*if(ball->direction.y < 0){
-
-		}*/
-
 
 }
