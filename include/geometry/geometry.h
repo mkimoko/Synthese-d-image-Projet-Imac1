@@ -3,19 +3,17 @@
 
 /** STRUCTURES **/
 
-typedef struct
+typedef struct Vector2D
 {
 	float x, y;
 } Vector2D;
 
-typedef struct
+typedef struct Point2D
 {
 	float x, y;
 } Point2D;
 
-
-
-typedef struct
+typedef struct Color3f
 {
 	float r, g, b;
 } Color3f;
