@@ -16,7 +16,7 @@ Point2D PointXY(float x, float y)
 	return point;
 }
 
-Vector2D VectorXYZ(float x, float y)
+Vector2D VectorXY(float x, float y)
 {
 	Vector2D vector;
 	vector.x = x;
@@ -27,7 +27,7 @@ Vector2D VectorXYZ(float x, float y)
 
 Vector2D Vector(Point2D A, Point2D B)
 {
-	Vector3D vector;
+	Vector2D vector;
 	vector.x = B.x - A.x;
 	vector.y = B.y - A.y;
 
@@ -63,7 +63,7 @@ Vector2D SubVectors(Vector2D V, Vector2D W)
 
 Vector2D MultVector(Vector2D V, float scalaire)
 {
-	Vector3D vector;
+	Vector2D vector;
 	vector.x = V.x * scalaire;
 	vector.y = V.y * scalaire;
 
@@ -97,6 +97,25 @@ Vector2D Normalize(Vector2D V)
 	vector.y = V.y / norm;
 
 	return vector;
+}
+
+Point2D Translation(Point2D point, Vector2D deplacement){
+	Point2D result;
+
+	result.x = point.x + deplacement.x;
+	result.y = point.y + deplacement.y;
+
+	return result;
+}
+
+Color3f ColorRGB(float r, float g, float b){
+	Color3f color;
+
+	color.r = r;
+	color.g = g;
+	color.b = b;
+
+	return color;
 }
 
 Color3f AddColors(Color3f C, Color3f D)

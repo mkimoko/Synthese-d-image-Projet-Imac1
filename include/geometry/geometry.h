@@ -43,7 +43,11 @@ float DotProduct(Vector2D V, Vector2D W);
 float Norm(Vector2D V);
 /* Normalisé d'un vecteur */
 Vector2D Normalize(Vector2D V);
+/*Effectue translation d'un point*/
+Point2D Translation(Point2D point, Vector2D deplacement);
 
+/*Construit une couleur*/ 
+Color3f ColorRGB(float r, float v, float b);
 /* Addition de couleurs */
 Color3f AddColors(Color3f C, Color3f D);
 /* Soustraction de couleurs */
