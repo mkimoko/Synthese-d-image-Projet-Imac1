@@ -5,8 +5,8 @@
 #include <stdio.h>
 
 #include "geometry/geometry.c"
-#include "element/balle.c"
-#include "element/barre.c"
+#include "element/joueur.c"
+
 
 #define MYSCALE 0.05
 
