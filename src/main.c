@@ -38,13 +38,16 @@ int main(int argc, char** argv) {
   /* Titre de la fenêtre */
   SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL);
 
-  /********** Balle*******/
+
+  /****************************JOUEUR 1*************************************/
+
+  /*************************** BALLE 1*****************************/
   Point2D position = PointXY(0.9,0);
-  Vector2D direction = VectorXY(0.8,0.15);
+  Vector2D direction = VectorXY(0.8,1);
   Color3f color = ColorRGB(255,255,255);
   Balles balles = BallFabrik(position, direction, color); 
 
-  /***********************BARRE***********************/
+  /***********************BARRE 1***********************/
 
   Point2D p1 = PointXY(0.2/MYSCALE,-0.85/MYSCALE);
   Point2D p2 = PointXY(-0.2/MYSCALE,-0.85/MYSCALE);
@@ -57,6 +60,43 @@ int main(int argc, char** argv) {
   Barres barre = BarreFabrik(p1,p2,p3,p4,d,color2);
   int boolean = 0; 
   
+  Player j1 = joueurFabrik(barre, balles, color);
+
+  /**************************FIN JOUEUR 1*******************************/
+
+
+
+
+
+/****************************JOUEUR 2*************************************/
+
+  /*************************** BALLE 2*****************************/
+  position = PointXY(-0.9,0);
+  direction = VectorXY(-0.8,-1);
+  color = ColorRGB(255,255,255);
+  balles = BallFabrik(position, direction, color); 
+
+  /***********************BARRE 2***********************/
+
+  p1 = PointXY(0.2/MYSCALE,0.85/MYSCALE);
+  p2 = PointXY(-0.2/MYSCALE,0.85/MYSCALE);
+  p3 = PointXY(0.2/MYSCALE,0.9/MYSCALE);
+  p4 = PointXY(-0.2/MYSCALE,0.9/MYSCALE);
+
+  d = VectorXY(1,0);
+  color2 = ColorRGB(255,255,255);
+
+  barre = BarreFabrik(p1,p2,p3,p4,d,color2);
+  int boolean2 = 0; 
+  
+  Player j2 = joueurFabrik(barre, balles, color);    
+
+  /**************************FIN JOUEUR 2*******************************/
+
+
+
+
+
   /* Boucle d'affichage */
   int loop = 1;    
   while(loop) {
@@ -64,24 +104,90 @@ int main(int argc, char** argv) {
     Uint32 startTime = SDL_GetTicks(); 
     
     /* Placer ici le code de dessin */
-    glClear(GL_COLOR_BUFFER_BIT);  
+    glClear(GL_COLOR_BUFFER_BIT); 
 
-    /* ********************MATRICE DE LA BALLE********************* */
+/***********************LES MATRICES DU JOUEUR 1********************************/     
+
+    /* ********************MATRICE DE LA BALLE 1********************* */
     glMatrixMode(GL_MODELVIEW);  
     glLoadIdentity();
     glScalef(MYSCALE, MYSCALE, 1);
-    moveBall(balles);
-    balles->position = Translation(balles->position, MultVector(balles->direction, MYSCALE) );
-    limiteRepere(balles, 1/MYSCALE);
+    moveBall(j1->balles);
+    j1->balles->position = Translation(j1->balles->position, MultVector(j1->balles->direction, MYSCALE) );
+    limiteRepere(j1->balles, 1/MYSCALE);
     glPushMatrix();
 
-    /* ********************MATRICE DE LA BARRE********************* */
+    /* ********************MATRICE DE LA BARRE 1********************* */
     glMatrixMode(GL_MODELVIEW);  
     glLoadIdentity();
     glScalef(MYSCALE, MYSCALE, 1);
-    drawBarre(barre);
-    moveBarre(barre, boolean);
+    drawBarre(j1->barre);
+    moveBarre(j1->barre, boolean);
     glPushMatrix();
+
+
+  /***********************CONTACT BARRE BALLE J1 + SHOOT**************************/
+
+    /***Contact barre du joueur 1 et balle du joueur 1****/ 
+    if ( contactInf(j1->barre, j1->balles) == 1)
+    {
+      shoot(j1->balles);
+    }
+
+    /***Contact barre du joueur 1 et balle du joueur 2****/ 
+    if ( contactInf(j1->barre, j2->balles) == 1)
+    {
+      shoot(j2->balles);
+    }
+
+
+/*****************************FIN DES MATRICES JOUEUR 1*******************************/
+
+
+
+
+/***********************LES MATRICES DU JOUEUR 2********************************/     
+
+    /* ********************MATRICE DE LA BALLE 2********************* */
+    glMatrixMode(GL_MODELVIEW);  
+    glLoadIdentity();
+    glScalef(MYSCALE, MYSCALE, 1);
+    moveBall(j2->balles);
+    j2->balles->position = Translation(j2->balles->position, MultVector(j2->balles->direction, MYSCALE) );
+    limiteRepere(j2->balles, 1/MYSCALE);
+    glPushMatrix();
+
+    /* ********************MATRICE DE LA BARRE 2********************* */
+    glMatrixMode(GL_MODELVIEW);  
+    glLoadIdentity();
+    glScalef(MYSCALE, MYSCALE, 1);
+    drawBarre(j2->barre);
+    moveBarre(j2->barre, boolean2);
+    glPushMatrix();
+
+
+    /***********************CONTACT BARRE BALLE J2 + SHOOT**************************/
+
+    /***Contact barre du joueur 2 et balle du joueur 1****/ 
+    if ( contactSup(j2->barre, j1->balles) == 1)
+    {
+      shoot(j1->balles);
+    }
+
+    /***Contact barre du joueur 2 et balle du joueur 2****/ 
+    if ( contactSup(j2->barre, j2->balles) == 1 )
+    {
+      shoot(j2->balles);
+    }
+
+/*****************************FIN DES MATRICES JOUEUR 2*******************************/
+
+
+
+
+
+
+
 
 
     /* Echange du front et du back buffer : mise à jour de la fenêtre */
@@ -108,36 +214,75 @@ int main(int argc, char** argv) {
           break;
 
 
-          
         /* Touche clavier */
         case SDL_KEYDOWN:
 
+
+        /*********************CAS BARRE JOUEUR 1**************************/
           if( e.key.keysym.sym == SDLK_LEFT){
-            if (limiteTerrain(barre->p1, barre->p2,1/MYSCALE) != 2)
+
+
+            if (limiteTerrain(j1->barre->p1, j1->barre->p2,1/MYSCALE) != 2)
             {
               boolean = 1;
-              barre->direction.x = -10;
-              moveBarre(barre, boolean);
-              barre->p1 = Translation(barre->p1, MultVector(barre->direction, MYSCALE) );
-              barre->p2 = Translation(barre->p2, MultVector(barre->direction, MYSCALE) );
-              barre->p3 = Translation(barre->p3, MultVector(barre->direction, MYSCALE) );
-              barre->p4 = Translation(barre->p4, MultVector(barre->direction, MYSCALE) );
+              j1->barre->direction.x = -10;
+              moveBarre(j1->barre, boolean);
+              j1->barre->p1 = Translation(j1->barre->p1, MultVector(j1->barre->direction, MYSCALE) );
+              j1->barre->p2 = Translation(j1->barre->p2, MultVector(j1->barre->direction, MYSCALE) );
+              j1->barre->p3 = Translation(j1->barre->p3, MultVector(j1->barre->direction, MYSCALE) );
+              j1->barre->p4 = Translation(j1->barre->p4, MultVector(j1->barre->direction, MYSCALE) );
             } 
           }
 
           if( e.key.keysym.sym == SDLK_RIGHT){
-            if (limiteTerrain(barre->p1, barre->p2,1/MYSCALE) != 1 )
+            if (limiteTerrain(j1->barre->p1, j1->barre->p2,1/MYSCALE) != 1 )
             {
               boolean = 1;
-              barre->direction.x = 10;
-              moveBarre(barre, boolean);
-              barre->p1 = Translation(barre->p1, MultVector(barre->direction, MYSCALE) );
-              barre->p2 = Translation(barre->p2, MultVector(barre->direction, MYSCALE) );
-              barre->p3 = Translation(barre->p3, MultVector(barre->direction, MYSCALE) );
-              barre->p4 = Translation(barre->p4, MultVector(barre->direction, MYSCALE) );
+              j1->barre->direction.x = 10;
+              moveBarre(j1->barre, boolean);
+              j1->barre->p1 = Translation(j1->barre->p1, MultVector(j1->barre->direction, MYSCALE) );
+              j1->barre->p2 = Translation(j1->barre->p2, MultVector(j1->barre->direction, MYSCALE) );
+              j1->barre->p3 = Translation(j1->barre->p3, MultVector(j1->barre->direction, MYSCALE) );
+              j1->barre->p4 = Translation(j1->barre->p4, MultVector(j1->barre->direction, MYSCALE) );
             }
-            
           }
+
+          /***********************FIN CAS BARRE JOUEUR 1********************/
+
+
+          /*********************CAS BARRE JOUEUR 2**************************/
+
+          if( e.key.keysym.sym == SDLK_a){
+
+            
+            if (limiteTerrain(j2->barre->p1, j2->barre->p2,1/MYSCALE) != 2)
+            {
+              boolean2 = 1;
+              j2->barre->direction.x = -10;
+              moveBarre(j2->barre, boolean2);
+              j2->barre->p1 = Translation(j2->barre->p1, MultVector(j2->barre->direction, MYSCALE) );
+              j2->barre->p2 = Translation(j2->barre->p2, MultVector(j2->barre->direction, MYSCALE) );
+              j2->barre->p3 = Translation(j2->barre->p3, MultVector(j2->barre->direction, MYSCALE) );
+              j2->barre->p4 = Translation(j2->barre->p4, MultVector(j2->barre->direction, MYSCALE) );
+            } 
+          }
+
+          if( e.key.keysym.sym == SDLK_z){
+            if (limiteTerrain(j2->barre->p1, j2->barre->p2,1/MYSCALE) != 1 )
+            {
+              boolean2 = 1;
+              j2->barre->direction.x = 10;
+              moveBarre(j2->barre, boolean2);
+              j2->barre->p1 = Translation(j2->barre->p1, MultVector(j2->barre->direction, MYSCALE) );
+              j2->barre->p2 = Translation(j2->barre->p2, MultVector(j2->barre->direction, MYSCALE) );
+              j2->barre->p3 = Translation(j2->barre->p3, MultVector(j2->barre->direction, MYSCALE) );
+              j2->barre->p4 = Translation(j2->barre->p4, MultVector(j2->barre->direction, MYSCALE) );
+            }
+          }
+
+          /***********************FIN CAS BARRE JOUEUR 2********************/
+
+
           if( e.key.keysym.sym == SDLK_q)
             SDL_Quit();
           break;

@@ -36,9 +36,24 @@ void moveBall(Balles ball){
 
 void limiteRepere(Balles balles, float limit){
 
+	Vector2D normal = Normalize(balles-> direction);
+
 	if ( ( balles->position.x <= -(limit-4)  && balles->position.y <= limit-4 && balles->position.y >= -(limit-4) )  ||  ( balles->position.x >= (limit-4)  && balles->position.y <= limit-4 && balles->position.y >= -(limit-4) ) )
 	{
 		balles->direction.x = balles->direction.x * (-1);
+
+
+		if (balles->position.y <= normal.y)
+			{
+				balles->direction.y = normal.y + fabs( normal.y - balles->direction.y);	
+			}
+
+
+
+		if (balles->position.y >= normal.y)
+			{
+				balles->direction.y = normal.y - fabs( normal.y - balles->direction.y);	
+			}
 	}
 
 }

@@ -14,7 +14,7 @@ typedef Joueur* Player;
 
 
 /** FONCTIONS **/
-Barres joueurFabrik(Barres barre, Balles balles, Color3f color);
+Player joueurFabrik(Barres barre, Balles balles, Color3f color);
 
 int contactInf(Barres barre, Balles balles);
 int contactSup(Barres barre, Balles balles);
