@@ -2,7 +2,8 @@
 #include "barre.c"
 #include "../../include/element/joueur.h"
 
-Player joueurFabrik(Barres barre, Balles balles, Color3f color){
+
+Player joueurFabrik(Barres barre, Balles balles){
 
 	Player j = malloc(sizeof(Joueur));
 
@@ -10,8 +11,9 @@ Player joueurFabrik(Barres barre, Balles balles, Color3f color){
 	{
 		j->barre = barre;
 		j->balles = balles;
-		j->color = color;
-		printf("hello\n");
+		j->nbBalles = BALLMAX;
+		j->score = 0;
+		newBall(j, j->balles->position, j->balles->direction);
 		return j; 
 	}
 
@@ -55,4 +57,40 @@ void shoot(Balles balles){
 	{
 		balles->direction.x = normal.x - fabs( normal.x - balles->direction.x);	
 	}
+}
+
+
+
+int score(Player top, Player down, float limit){
+
+	/*Si joueur du bas marque un point */
+	if ( horsLimite(top->balles, limit) == 1 || horsLimite(down->balles, limit) == 1 )
+	{
+		down->score = down->score + 1;
+		return 1; 
+	}
+
+
+	/*Si joueur du haut marque un point */
+	if ( horsLimite(top->balles, limit) == -1 || horsLimite(down->balles, limit) == -1 )
+	{
+		top->score = top->score + 1; 
+		return -1;
+	}
+
+	return 0;
+	
+}
+
+void newBall(Player j, Point2D position, Vector2D direction){
+
+	if (j->nbBalles > 0)
+	{
+		j->balles->next = BallFabrik(position, direction, j->balles->color);
+		j->balles = j->balles->next;
+		j->nbBalles--;
+		j->balles->next = NULL;
+	}
+	return;
+	
 }

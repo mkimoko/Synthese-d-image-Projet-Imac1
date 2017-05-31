@@ -57,3 +57,19 @@ void limiteRepere(Balles balles, float limit){
 	}
 
 }
+
+
+int horsLimite(Balles balles, float limit){
+
+	if (balles->position.y < limit * -1 )
+	{
+		return -1;
+	}
+
+	if (balles->position.y > limit)
+	{
+		return 1;
+	}
+
+	return 0;
+}

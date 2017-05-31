@@ -13,7 +13,6 @@ Barres BarreFabrik(Point2D p1, Point2D p2, Point2D p3, Point2D p4, Vector2D dire
 
 		barre->direction = direction;
 		barre->color = color;
-		printf("helle\n");
 
 		return barre;
 	}

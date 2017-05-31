@@ -39,13 +39,14 @@ int main(int argc, char** argv) {
   SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL);
 
 
+
   /****************************JOUEUR 1*************************************/
 
   /*************************** BALLE 1*****************************/
-  Point2D position = PointXY(0.9,0);
-  Vector2D direction = VectorXY(0.8,1);
+  Point2D position1 = PointXY(0.9,0);
+  Vector2D direction1 = VectorXY(0.8,1);
   Color3f color = ColorRGB(255,255,255);
-  Balles balles = BallFabrik(position, direction, color); 
+  Balles balles = BallFabrik(position1, direction1, color); 
 
   /***********************BARRE 1***********************/
 
@@ -54,27 +55,24 @@ int main(int argc, char** argv) {
   Point2D p3 = PointXY(0.2/MYSCALE,-0.9/MYSCALE);
   Point2D p4 = PointXY(-0.2/MYSCALE,-0.9/MYSCALE);
 
-  Vector2D d = VectorXY(1,0);
-  Color3f color2 = ColorRGB(255,255,255);
+  Vector2D d1 = VectorXY(1,0);
+  Color3f color2 = ColorRGB(255, 0, 0);
 
-  Barres barre = BarreFabrik(p1,p2,p3,p4,d,color2);
+  Barres barre = BarreFabrik(p1,p2,p3,p4,d1,color2);
   int boolean = 0; 
   
-  Player j1 = joueurFabrik(barre, balles, color);
+  Player j1 = joueurFabrik(barre, balles);
 
   /**************************FIN JOUEUR 1*******************************/
-
-
-
 
 
 /****************************JOUEUR 2*************************************/
 
   /*************************** BALLE 2*****************************/
-  position = PointXY(-0.9,0);
-  direction = VectorXY(-0.8,-1);
+  Point2D position2 = PointXY(-0.9,0);
+  Vector2D direction2 = VectorXY(-0.8,-1);
   color = ColorRGB(255,255,255);
-  balles = BallFabrik(position, direction, color); 
+  balles = BallFabrik(position2, direction2, color); 
 
   /***********************BARRE 2***********************/
 
@@ -83,13 +81,13 @@ int main(int argc, char** argv) {
   p3 = PointXY(0.2/MYSCALE,0.9/MYSCALE);
   p4 = PointXY(-0.2/MYSCALE,0.9/MYSCALE);
 
-  d = VectorXY(1,0);
-  color2 = ColorRGB(255,255,255);
+  Vector2D d2 = VectorXY(1,0);
+  color2 = ColorRGB(0, 0, 255);
 
-  barre = BarreFabrik(p1,p2,p3,p4,d,color2);
+  barre = BarreFabrik(p1,p2,p3,p4,d2,color2);
   int boolean2 = 0; 
   
-  Player j2 = joueurFabrik(barre, balles, color);    
+  Player j2 = joueurFabrik(barre, balles);
 
   /**************************FIN JOUEUR 2*******************************/
 
@@ -98,7 +96,7 @@ int main(int argc, char** argv) {
 
 
   /* Boucle d'affichage */
-  int loop = 1;    
+  int loop = 1;
   while(loop) {
     /* Récupération du temps au début de la boucle */
     Uint32 startTime = SDL_GetTicks(); 
@@ -141,10 +139,11 @@ int main(int argc, char** argv) {
     }
 
 
+
 /*****************************FIN DES MATRICES JOUEUR 1*******************************/
 
 
-
+ 
 
 /***********************LES MATRICES DU JOUEUR 2********************************/     
 
@@ -164,7 +163,7 @@ int main(int argc, char** argv) {
     drawBarre(j2->barre);
     moveBarre(j2->barre, boolean2);
     glPushMatrix();
-
+ 
 
     /***********************CONTACT BARRE BALLE J2 + SHOOT**************************/
 
@@ -182,12 +181,127 @@ int main(int argc, char** argv) {
 
 /*****************************FIN DES MATRICES JOUEUR 2*******************************/
 
+ 
+/***********************COMPTE DES POINTS ET ARBITRAGE (SCORE)********************/
+    
 
+    if( (j1->nbBalles > 0  ||  j2->nbBalles > 0 ) )
+    {
 
+      score(j2, j1, 1/MYSCALE); 
+      /***********************************Joueur du dessus (=j2) laisse passer une balle******************************/
 
+      /*Si la balles du joueur 2 est perdue */
+      if ( horsLimite(j2->balles, 1/MYSCALE) == 1 )
+        {
+          printf("Le score de joueur 1 est: %d\n", j1->score);
+          printf("Le score de joueur 2 est: %d\n", j2->score);
 
+          if (j1->balles->direction.y < 0)
+          {
+            
+            newBall(j2, position1, direction1);
+            printf("2.1, nb de balle = %d\n", j2->nbBalles);
+          }
 
+          if (j1->balles->direction.y >= 0)
+          {
+          
+            newBall(j2, position2, direction2);
+            printf("2.2, nb de balle = %d\n", j2->nbBalles);  
+          }
 
+          
+
+        }
+
+        /*Si la balles du joueur 1 est perdue*/
+        if ( horsLimite(j1->balles, 1/MYSCALE) == 1 )
+        {
+          printf("Le score de joueur 1 est: %d\n", j1->score);
+          printf("Le score de joueur 2 est: %d\n", j2->score);
+
+          if (j2->balles->direction.y < 0)
+          {
+            
+            newBall(j1, position1, direction1);
+            printf("1.1, nb de balle = %d\n", j1->nbBalles);
+          }
+
+          if (j1->balles->direction.y >= 0)
+          {
+            
+            newBall(j1, position2, direction2);
+            printf("1.2, nb de balle = %d\n", j1->nbBalles);
+          }
+
+        }
+ 
+        /*Joueur du dessous (=j1) laisse passer une balle*/
+
+      /*Si la balles du joueur 2 est perdue */
+      if ( horsLimite(j2->balles, 1/MYSCALE) == -1 )
+        {
+          printf("Le score de joueur 1 est: %d\n", j1->score);
+          printf("Le score de joueur 2 est: %d\n", j2->score);
+ 
+          if (j1->balles->direction.y > 0)
+          {
+            
+
+            newBall(j2, position2, direction2);
+            printf("-2.1, nb de balle = %d\n", j2->nbBalles);
+          }
+
+          if (j1->balles->direction.y <= 0) 
+          {
+           
+
+            newBall(j2, position1, direction1);
+            printf("-2.2, nb de balle = %d\n", j2->nbBalles);
+          }
+
+        }
+
+        /*Si la balles du joueur 1 est perdue*/
+        if ( horsLimite(j1->balles, 1/MYSCALE) == -1 )
+        {
+          printf("Le score de joueur 1 est: %d\n", j1->score);
+          printf("Le score de joueur 2 est: %d\n", j2->score);
+
+          if (j2->balles->direction.y > 0)
+          {
+            newBall(j1, position2, direction2);
+            printf("-1.1, nb de balle = %d\n", j1->nbBalles);
+          }
+
+          if (j1->balles->direction.y <= 0)
+          {
+            
+            newBall(j1, position1, direction1);
+            printf("-1.2, nb de balle = %d\n", j1->nbBalles);
+          }
+          
+        }
+
+        if ( (j1->nbBalles == 0  &&  j2->nbBalles == 0 ) )
+          {
+            printf("A\n");
+            if (j1->score > j2->score)
+              {
+                printf("Le joueur 1 a gagné avec un score de %d contre %d pour le joueur 2\n",j1->score, j2->score );
+              }
+
+            if (j1->score < j2->score)
+              {
+                printf("Le joueur 2 a gagné avec un score de %d contre %d pour le joueur 1\n",j2->score, j1->score );
+              }
+
+            else
+             printf("Egalité joueur 1: %d - joueur 2: %d\n",j1->score, j2->score );
+
+        }
+    }
 
 
     /* Echange du front et du back buffer : mise à jour de la fenêtre */
