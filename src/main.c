@@ -1,17 +1,18 @@
 #include <SDL/SDL.h>
-#include <GL/gl.h>   
+#include <GL/gl.h>      
 #include <GL/glu.h>
-#include <stdlib.h>
-#include <stdio.h>
-
-#include "geometry/geometry.c"
-#include "element/joueur.c"
-
+#include <stdlib.h>   
+#include <stdio.h>                    
+      
+#include "geometry/geometry.c"       
+#include "element/joueur.c"   
+#include "niveau/niveau.c" 
+   
 
 #define MYSCALE 0.05
 
 /* Dimensions de la fenêtre */
-static unsigned int WINDOW_WIDTH = 800; 
+static unsigned int WINDOW_WIDTH = 800;  
 static unsigned int WINDOW_HEIGHT = 800;
 
 /* Nombre de bits par pixel de la fenêtre */
@@ -39,7 +40,8 @@ int main(int argc, char** argv) {
   SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL);
 
 
-
+  Mur niveau = malloc(sizeof(Brik));
+  chargeLvl("../niveau/niveau1.lvl", niveau);
   /****************************JOUEUR 1*************************************/
 
   /*************************** BALLE 1*****************************/
