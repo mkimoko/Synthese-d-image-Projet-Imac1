@@ -12,6 +12,7 @@ typedef struct Brik
 	Point2D p3;
 	Point2D p4;
 	int propriete;
+	int touche;
 }Brik;
 
 typedef struct Mur

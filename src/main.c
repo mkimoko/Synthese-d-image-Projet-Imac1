@@ -5,26 +5,26 @@
 #include <stdio.h>                     
       
 #include "geometry/geometry.c"       
-#include "element/joueur.c"   
-#include "niveau/niveau.c"   
+#include "element/joueur.c"    
+#include "niveau/niveau.c"     
     
 
-#define MYSCALE 0.05
+#define MYSCALE 0.05     
 
-/* Dimensions de la fenêtre */
-static unsigned int WINDOW_WIDTH = 800;  
-static unsigned int WINDOW_HEIGHT = 800;
+/* Dimensions de la fenêtre */ 
+static unsigned int WINDOW_WIDTH = 800;       
+static unsigned int WINDOW_HEIGHT = 800; 
  
 /* Nombre de bits par pixel de la fenêtre */
-static const unsigned int BIT_PER_PIXEL = 32;    
+static const unsigned int BIT_PER_PIXEL = 32;      
   
 /* Nombre minimal de millisecondes separant le rendu de deux images */
-static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;  
+static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;   
 
 int main(int argc, char** argv) {
   /* Initialisation de la SDL */
   if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
-    fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
+    fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");  
     return EXIT_FAILURE;  
   }
   
@@ -33,24 +33,23 @@ int main(int argc, char** argv) {
     fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
     return EXIT_FAILURE; 
   }  
+    
+  gluOrtho2D(-1., 1., -1., 1.);               
+      
+  /* Titre de la fenêtre */      
+  SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL);    
+   
  
-  gluOrtho2D(-1., 1., -1., 1.);           
+  Wall mur = chargeLvl("../niveau/niveau1.lvl", 1, 0.05);              
      
-  /* Titre de la fenêtre */     
-  SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL);   
   
-
-  Wall mur = chargeLvl("../niveau/niveau1.lvl", 1/MYSCALE, 0.05);
-  printf("\nmur->p1.x = %f,mur->p1.y = %f, \nmur->p2.x = %f, mur->p2.y = %f, \nmur->p3.x = %f,mur->p3.y = %f, \nmur->p4.x = %f mur->p4.y = %f,\n", mur->niveau[0].p1.x,mur->niveau[0].p1.y, mur->niveau[0].p2.x,mur->niveau[0].p2.y, mur->niveau[0].p3.x,mur->niveau[0].p3.y, mur->niveau[0].p4.x,mur->niveau[0].p4.y); 
-
- 
   /****************************JOUEUR 1*************************************/
 
   /*************************** BALLE 1*****************************/
-  Point2D position1 = PointXY(0.9,0);
-  Vector2D direction1 = VectorXY(0.8,1);
+  Point2D position1 = PointXY(0.9,0.5);
+  Vector2D direction1 = VectorXY(0,1);
   Color3f color = ColorRGB(255,255,255);   
-  Balles balles = BallFabrik(position1, direction1, color);            
+  Balles balles = BallFabrik(position1, direction1, color);             
 
   /***********************BARRE 1***********************/
 
@@ -59,7 +58,7 @@ int main(int argc, char** argv) {
   Point2D p3 = PointXY(0.2/MYSCALE,-0.9/MYSCALE); 
   Point2D p4 = PointXY(-0.2/MYSCALE,-0.9/MYSCALE); 
 
-  Vector2D d1 = VectorXY(1,0);
+  Vector2D d1 = VectorXY(1,0); 
   Color3f color2 = ColorRGB(255, 0, 0);
 
   Barres barre = BarreFabrik(p1,p2,p3,p4,d1,color2);
@@ -73,8 +72,8 @@ int main(int argc, char** argv) {
 /****************************JOUEUR 2*************************************/
 
   /*************************** BALLE 2*****************************/
-  Point2D position2 = PointXY(-0.9,0);
-  Vector2D direction2 = VectorXY(-0.8,-1);
+  Point2D position2 = PointXY(-0.9,-0.5);
+  Vector2D direction2 = VectorXY(0,-1);
   color = ColorRGB(255,255,255);
   balles = BallFabrik(position2, direction2, color); 
 
@@ -110,6 +109,7 @@ int main(int argc, char** argv) {
         glLoadIdentity();
         glScalef(MYSCALE, MYSCALE, 1);
         drawMur(mur);
+        collision(mur, j1, j2);
     glPushMatrix(); 
 
 
@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
 
 
 /***********************LES MATRICES DU JOUEUR 1********************************/     
-
+ 
     /* ********************MATRICE DE LA BALLE 1********************* */
     glMatrixMode(GL_MODELVIEW);  
     glLoadIdentity();
@@ -233,7 +233,7 @@ int main(int argc, char** argv) {
         if ( horsLimite(j1->balles, 1/MYSCALE) == 1 )
         {
           printf("Le score de joueur 1 est: %d\n", j1->score);
-          printf("Le score de joueur 2 est: %d\n", j2->score);
+          printf("Le score de joueur 2 est: %d\n", j2->score); 
 
           if (j2->balles->direction.y < 0)
           {
@@ -314,18 +314,18 @@ int main(int argc, char** argv) {
             else
              printf("Egalité joueur 1: %d - joueur 2: %d\n",j1->score, j2->score );
 
-
-        }
-    }
-
+ 
+        }   
+    }  
+ 
 
     /* Echange du front et du back buffer : mise à jour de la fenêtre */
-    SDL_GL_SwapBuffers();
-    
+    SDL_GL_SwapBuffers();    
+     
     /* Boucle traitant les evenements */
     SDL_Event e;
     while(SDL_PollEvent(&e)) {
-      /* L'utilisateur ferme la fenêtre : */
+      /* L'utilisateur ferme la fenêtre : */    
       if(e.type == SDL_QUIT) {
         loop = 0;
         break;
@@ -349,7 +349,7 @@ int main(int argc, char** argv) {
 
         /*********************CAS BARRE JOUEUR 1**************************/
           if( e.key.keysym.sym == SDLK_LEFT){
-
+ 
 
             if (limiteTerrain(j1->barre->p1, j1->barre->p2,1/MYSCALE) != 2)
             {

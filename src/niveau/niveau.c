@@ -11,6 +11,7 @@ Brik brikFabrik(Point2D p1, Point2D p2, Point2D p3, Point2D p4, int propriete){
         brik.p3 = p3;
         brik.p4 = p4;
         brik.propriete = propriete;
+        brik.touche = 0;
 	
 	return brik;
 
@@ -52,10 +53,6 @@ Wall chargeLvl(char *chemin, int limit, float ecart){
     else
       max = mur->largeur;
 
-    Point2D tmp1 = PointXY( ((-limit/2) +ecart) / ecart, ((limit/4)+ecart)/ecart );
-    Point2D tmp2 = PointXY( tmp1.x  + (limit/mur->largeur)/ecart, ((limit/4)+ecart)/ecart );
-    Point2D tmp3 = PointXY( tmp2.x / ecart, (tmp2.y + limit/mur->hauteur) / ecart );
-    Point2D tmp4 = PointXY( tmp1.x / ecart, tmp3.y / ecart);  
 
     for (i = 0; i <= max*max; i++)
     {
@@ -63,14 +60,12 @@ Wall chargeLvl(char *chemin, int limit, float ecart){
       {
         if (i >= mur->hauteur/2)
           mult = 1;
-        p1 = PointXY(tmp1.x + (j/2)*tmp1.x * ecart, tmp1.y + (i/2)* tmp1.y * ecart );
-        tmp1 = p1;
-        p2 = PointXY( tmp2.x + (j/2)*tmp2.x * ecart, tmp1.y + (i/2)* tmp2.y * ecart );
-        tmp2 = p2;
-        p3 = PointXY( tmp3.x + (j/2)*tmp3.x * ecart, tmp3.y + (i/2)* tmp3.y * ecart );
-        tmp3 = p3;
-        p4 = PointXY( tmp4.x + (j/2)*tmp4.x * ecart, tmp4.y + (i/2)* tmp4.y * ecart);
-        tmp4 = p4;
+        p1 = PointXY( 20*(limit-ecart + i*( limit/mur->largeur )), 20*( (limit/4) - i*(limit/mur->hauteur+ecart) - (limit/mur->hauteur+ecart) ) );
+        p2 = PointXY( 20*(-limit+ecart + i*limit/mur->largeur), 20*( (limit/4) - i*(limit/mur->hauteur+ecart) - (limit/mur->hauteur+ecart) ) );
+        p3 = PointXY( p2.x, 20*( (limit/4) - i*(limit/mur->hauteur+ecart) ) );
+        p4 = PointXY( (p1.x), 20*( (limit/4) - i*(limit/mur->hauteur+ecart) ) );
+
+        
       }
       caractereActuel = fgetc(fichier); // On lit le caractère
 
@@ -83,15 +78,58 @@ Wall chargeLvl(char *chemin, int limit, float ecart){
 }
 
 void drawMur(Wall mur){
-    glBegin(GL_QUADS);
+    
     for (int i = 0; i < mur->hauteur * mur->hauteur; i++)
     {
-      glColor3d( 240, 195, 0 );
-      glVertex2f(mur->niveau[i].p1.x, mur->niveau[i].p1.y);
-      glVertex2f(mur->niveau[i].p2.x, mur->niveau[i].p2.y);
-      glVertex2f(mur->niveau[i].p3.x, mur->niveau[i].p3.y);
-      glVertex2f(mur->niveau[i].p4.x, mur->niveau[i].p4.y);
-    glEnd();
-    }
-        
+      if (mur->niveau[i].touche == 0)
+      {
+        glBegin(GL_QUADS);
+          glColor3d( 240, 195, 0 );
+          glVertex2f(mur->niveau[i].p1.x, mur->niveau[i].p1.y);
+          glVertex2f(mur->niveau[i].p2.x, mur->niveau[i].p2.y);
+          glVertex2f(mur->niveau[i].p3.x, mur->niveau[i].p3.y);
+          glVertex2f(mur->niveau[i].p4.x, mur->niveau[i].p4.y);
+        glEnd();
+      }
+    }     
 }
+
+void collision(Wall wall, Player j, Player adv){
+  for (int i = 0; i < wall->hauteur * wall->largeur; i++)
+  {
+    if ( j->balles->position.x <= wall->niveau[i].p1.x-4  && j->balles->position.x >= wall->niveau[i].p2.x-4 && ( j->balles->position.y == wall->niveau[i].p1.y+4 || j->balles->position.y == wall->niveau[i].p3.y-4 ) )
+    {
+      wall->niveau[i].touche == 1;
+      if (wall->niveau[i].propriete == 1)
+      {
+        adv->nbBalles--;
+      }
+
+      if (wall->niveau[i].propriete == 2)
+      {
+        j->nbBalles++;
+      }
+
+      if (wall->niveau[i].propriete == 3)
+      {
+        if ( (j->balles->direction.y > 0 && j->barre->p1.y > 0) || (j->balles->direction.y < 0 && j->barre->p1.y < 0) || (adv->balles->direction.y > 0 && adv->barre->p1.y < 0) || (adv->balles->direction.y < 0 && adv->barre->p1.y > 0))
+        {
+          j->balles->direction = MultVector(j->balles->direction, 0.5);
+        }
+      }
+
+      if (wall->niveau[i].propriete == 3)
+      {
+        if ( (j->balles->direction.y > 0 && j->barre->p1.y < 0) || (j->balles->direction.y < 0 && j->barre->p1.y > 0) || (adv->balles->direction.y > 0 && j->barre->p1.y > 0) || (j->balles->direction.y < 0 && j->barre->p1.y < 0))
+        {
+          j->balles->direction = MultVector(j->balles->direction, 2);
+        }
+      }
+
+      shoot(j->balles);
+    }
+  }
+
+}
+
+
