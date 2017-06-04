@@ -4,7 +4,7 @@ Barres BarreFabrik(Point2D p1, Point2D p2, Point2D p3, Point2D p4, Vector2D dire
 
 	Barres barre = malloc(sizeof(Barre));
 
-	if (barre != NULL)
+	if (barre != NULL) 
 	{
 		barre->p1 = p1;
 		barre->p2 = p2;
@@ -28,7 +28,7 @@ void drawBarre(Barres barre){
 		glVertex2f(barre->p2.x, barre->p2.y);
 		glVertex2f(barre->p4.x, barre->p4.y);
 		glVertex2f(barre->p3.x, barre->p3.y);
-	glEnd();
+	glEnd(); 
 }
 
 void moveBarre(Barres barre, int boolean){

@@ -2,60 +2,62 @@
 #include <GL/gl.h>      
 #include <GL/glu.h>
 #include <stdlib.h>   
-#include <stdio.h>                    
+#include <stdio.h>                     
       
 #include "geometry/geometry.c"       
 #include "element/joueur.c"   
-#include "niveau/niveau.c" 
-   
+#include "niveau/niveau.c"   
+    
 
 #define MYSCALE 0.05
 
 /* Dimensions de la fenêtre */
 static unsigned int WINDOW_WIDTH = 800;  
 static unsigned int WINDOW_HEIGHT = 800;
-
+ 
 /* Nombre de bits par pixel de la fenêtre */
-static const unsigned int BIT_PER_PIXEL = 32;
-
+static const unsigned int BIT_PER_PIXEL = 32;    
+  
 /* Nombre minimal de millisecondes separant le rendu de deux images */
-static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
+static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;  
 
 int main(int argc, char** argv) {
   /* Initialisation de la SDL */
   if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
     fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
-    return EXIT_FAILURE;
+    return EXIT_FAILURE;  
   }
   
   /* Ouverture d'une fenêtre et création d'un contexte OpenGL */
   if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_GL_DOUBLEBUFFER)) {
     fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
-    return EXIT_FAILURE;
+    return EXIT_FAILURE; 
   }  
+ 
+  gluOrtho2D(-1., 1., -1., 1.);           
+     
+  /* Titre de la fenêtre */     
+  SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL);   
+  
 
-  gluOrtho2D(-1., 1., -1., 1.);
-    
-  /* Titre de la fenêtre */
-  SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL);
+  Wall mur = chargeLvl("../niveau/niveau1.lvl", 1/MYSCALE, 0.05);
+  printf("\nmur->p1.x = %f,mur->p1.y = %f, \nmur->p2.x = %f, mur->p2.y = %f, \nmur->p3.x = %f,mur->p3.y = %f, \nmur->p4.x = %f mur->p4.y = %f,\n", mur->niveau[0].p1.x,mur->niveau[0].p1.y, mur->niveau[0].p2.x,mur->niveau[0].p2.y, mur->niveau[0].p3.x,mur->niveau[0].p3.y, mur->niveau[0].p4.x,mur->niveau[0].p4.y); 
 
-
-  Mur niveau = malloc(sizeof(Brik));
-  chargeLvl("../niveau/niveau1.lvl", niveau);
+ 
   /****************************JOUEUR 1*************************************/
 
   /*************************** BALLE 1*****************************/
   Point2D position1 = PointXY(0.9,0);
   Vector2D direction1 = VectorXY(0.8,1);
-  Color3f color = ColorRGB(255,255,255);
-  Balles balles = BallFabrik(position1, direction1, color); 
+  Color3f color = ColorRGB(255,255,255);   
+  Balles balles = BallFabrik(position1, direction1, color);            
 
   /***********************BARRE 1***********************/
 
   Point2D p1 = PointXY(0.2/MYSCALE,-0.85/MYSCALE);
-  Point2D p2 = PointXY(-0.2/MYSCALE,-0.85/MYSCALE);
-  Point2D p3 = PointXY(0.2/MYSCALE,-0.9/MYSCALE);
-  Point2D p4 = PointXY(-0.2/MYSCALE,-0.9/MYSCALE);
+  Point2D p2 = PointXY(-0.2/MYSCALE,-0.85/MYSCALE);  
+  Point2D p3 = PointXY(0.2/MYSCALE,-0.9/MYSCALE); 
+  Point2D p4 = PointXY(-0.2/MYSCALE,-0.9/MYSCALE); 
 
   Vector2D d1 = VectorXY(1,0);
   Color3f color2 = ColorRGB(255, 0, 0);
@@ -63,7 +65,7 @@ int main(int argc, char** argv) {
   Barres barre = BarreFabrik(p1,p2,p3,p4,d1,color2);
   int boolean = 0; 
   
-  Player j1 = joueurFabrik(barre, balles);
+  Player j1 = joueurFabrik(barre, balles);  
 
   /**************************FIN JOUEUR 1*******************************/
 
@@ -85,16 +87,13 @@ int main(int argc, char** argv) {
 
   Vector2D d2 = VectorXY(1,0);
   color2 = ColorRGB(0, 0, 255);
-
-  barre = BarreFabrik(p1,p2,p3,p4,d2,color2);
-  int boolean2 = 0; 
   
-  Player j2 = joueurFabrik(barre, balles);
-
+  barre = BarreFabrik(p1,p2,p3,p4,d2,color2);
+  int boolean2 = 0;  
+  
+  Player j2 = joueurFabrik(barre, balles); 
+ 
   /**************************FIN JOUEUR 2*******************************/
-
-
-
 
 
   /* Boucle d'affichage */
@@ -105,6 +104,19 @@ int main(int argc, char** argv) {
     
     /* Placer ici le code de dessin */
     glClear(GL_COLOR_BUFFER_BIT); 
+ 
+/************************MATRICE DU MUR************************/
+    glMatrixMode(GL_MODELVIEW);  
+        glLoadIdentity();
+        glScalef(MYSCALE, MYSCALE, 1);
+        drawMur(mur);
+    glPushMatrix(); 
+
+
+/**********************FIN MATRICE DU MUR*********************/
+
+
+
 
 /***********************LES MATRICES DU JOUEUR 1********************************/     
 
@@ -281,7 +293,7 @@ int main(int argc, char** argv) {
           {
             
             newBall(j1, position1, direction1);
-            printf("-1.2, nb de balle = %d\n", j1->nbBalles);
+            printf("-1.2, nb de balle = %d\n", j1->nbBalles); 
           }
           
         }
@@ -301,6 +313,7 @@ int main(int argc, char** argv) {
 
             else
              printf("Egalité joueur 1: %d - joueur 2: %d\n",j1->score, j2->score );
+
 
         }
     }
