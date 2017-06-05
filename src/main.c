@@ -107,9 +107,13 @@ int main(int argc, char** argv) {
 /************************MATRICE DU MUR************************/
     glMatrixMode(GL_MODELVIEW);  
         glLoadIdentity();
+        glEnable(GL_TEXTURE_2D);
         glScalef(MYSCALE, MYSCALE, 1);
         drawMur(mur);
         collision(mur, j1, j2);
+        /*printf("Collision avec balle 1 = %d\n", collision(mur, j1, j2));*/
+        collision(mur, j2, j1);
+        /*printf("Collision avec balle 2 = %d\n", collision(mur, j2, j1));*/
     glPushMatrix(); 
 
 
@@ -121,9 +125,9 @@ int main(int argc, char** argv) {
 /***********************LES MATRICES DU JOUEUR 1********************************/     
  
     /* ********************MATRICE DE LA BALLE 1********************* */
-    glMatrixMode(GL_MODELVIEW);  
-    glLoadIdentity();
-    glScalef(MYSCALE, MYSCALE, 1);
+    glMatrixMode(GL_MODELVIEW);   
+    glLoadIdentity(); 
+    glScalef(MYSCALE, MYSCALE, 1);  
     moveBall(j1->balles);
     j1->balles->position = Translation(j1->balles->position, MultVector(j1->balles->direction, MYSCALE) );
     limiteRepere(j1->balles, 1/MYSCALE);
@@ -199,7 +203,7 @@ int main(int argc, char** argv) {
 /***********************COMPTE DES POINTS ET ARBITRAGE (SCORE)********************/
     
 
-    if( (j1->nbBalles > 0  ||  j2->nbBalles > 0 ) )
+    if( (j1->vie > 0  &&  j2->vie > 0 ) )
     {
 
       score(j2, j1, 1/MYSCALE); 
@@ -208,21 +212,19 @@ int main(int argc, char** argv) {
       /*Si la balles du joueur 2 est perdue */
       if ( horsLimite(j2->balles, 1/MYSCALE) == 1 )
         {
-          printf("Le score de joueur 1 est: %d\n", j1->score);
-          printf("Le score de joueur 2 est: %d\n", j2->score);
+          printf("Il reste %d de vie au joueur 1\n", j1->vie);
+          printf("Il reste %d de vie au joueur 2\n", j2->vie);
 
           if (j1->balles->direction.y < 0)
           {
             
             newBall(j2, position1, direction1);
-            printf("2.1, nb de balle = %d\n", j2->nbBalles);
           }
 
           if (j1->balles->direction.y >= 0)
-          {
+          { 
           
             newBall(j2, position2, direction2);
-            printf("2.2, nb de balle = %d\n", j2->nbBalles);  
           }
 
           
@@ -232,21 +234,19 @@ int main(int argc, char** argv) {
         /*Si la balles du joueur 1 est perdue*/
         if ( horsLimite(j1->balles, 1/MYSCALE) == 1 )
         {
-          printf("Le score de joueur 1 est: %d\n", j1->score);
-          printf("Le score de joueur 2 est: %d\n", j2->score); 
+          printf("Il reste %d de vie au joueur 1\n", j1->vie);
+          printf("Il reste %d de vie au joueur 2\n", j2->vie); 
 
           if (j2->balles->direction.y < 0)
           {
             
             newBall(j1, position1, direction1);
-            printf("1.1, nb de balle = %d\n", j1->nbBalles);
           }
 
           if (j1->balles->direction.y >= 0)
           {
             
             newBall(j1, position2, direction2);
-            printf("1.2, nb de balle = %d\n", j1->nbBalles);
           }
 
         }
@@ -256,15 +256,14 @@ int main(int argc, char** argv) {
       /*Si la balles du joueur 2 est perdue */
       if ( horsLimite(j2->balles, 1/MYSCALE) == -1 )
         {
-          printf("Le score de joueur 1 est: %d\n", j1->score);
-          printf("Le score de joueur 2 est: %d\n", j2->score);
+          printf("Il reste %d de vie au joueur 1\n", j1->vie);
+          printf("Il reste %d de vie au joueur 2\n", j2->vie);
  
           if (j1->balles->direction.y > 0)
           {
             
 
             newBall(j2, position2, direction2);
-            printf("-2.1, nb de balle = %d\n", j2->nbBalles);
           }
 
           if (j1->balles->direction.y <= 0) 
@@ -272,7 +271,6 @@ int main(int argc, char** argv) {
            
 
             newBall(j2, position1, direction1);
-            printf("-2.2, nb de balle = %d\n", j2->nbBalles);
           }
 
         }
@@ -280,43 +278,33 @@ int main(int argc, char** argv) {
         /*Si la balles du joueur 1 est perdue*/
         if ( horsLimite(j1->balles, 1/MYSCALE) == -1 )
         {
-          printf("Le score de joueur 1 est: %d\n", j1->score);
-          printf("Le score de joueur 2 est: %d\n", j2->score);
+          printf("Il reste %d de vie au joueur 1\n", j1->vie);
+          printf("Il reste %d de vie au joueur 2\n", j2->vie);
 
           if (j2->balles->direction.y > 0)
           {
             newBall(j1, position2, direction2);
-            printf("-1.1, nb de balle = %d\n", j1->nbBalles);
           }
 
           if (j1->balles->direction.y <= 0)
           {
-            
             newBall(j1, position1, direction1);
-            printf("-1.2, nb de balle = %d\n", j1->nbBalles); 
           }
           
         }
 
-        if ( (j1->nbBalles == 0  &&  j2->nbBalles == 0 ) )
+        if ( j1->vie == 0 )
           {
-            printf("A\n");
-            if (j1->score > j2->score)
-              {
-                printf("Le joueur 1 a gagné avec un score de %d contre %d pour le joueur 2\n",j1->score, j2->score );
-              }
+                printf("Le joueur 2 a gagné\n");
+                loop = 0;
+          }
 
-            if (j1->score < j2->score)
-              {
-                printf("Le joueur 2 a gagné avec un score de %d contre %d pour le joueur 1\n",j2->score, j1->score );
-              }
-
-            else
-             printf("Egalité joueur 1: %d - joueur 2: %d\n",j1->score, j2->score );
-
- 
-        }   
-    }  
+          if ( j2->vie == 0 )
+          {
+                printf("Le joueur 1 a gagné\n");
+                loop = 0;
+          }
+        }  
  
 
     /* Echange du front et du back buffer : mise à jour de la fenêtre */

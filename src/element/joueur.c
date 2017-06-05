@@ -11,8 +11,7 @@ Player joueurFabrik(Barres barre, Balles balles){
 	{
 		j->barre = barre;
 		j->balles = balles;
-		j->nbBalles = BALLMAX;
-		j->score = 0;
+		j->vie = 3;
 		newBall(j, j->balles->position, j->balles->direction);
 		return j; 
 	}
@@ -66,7 +65,7 @@ int score(Player top, Player down, float limit){
 	/*Si joueur du bas marque un point */
 	if ( horsLimite(top->balles, limit) == 1 || horsLimite(down->balles, limit) == 1 )
 	{
-		down->score = down->score + 1;
+		top->vie = top->vie-1;
 		return 1; 
 	}
 
@@ -74,7 +73,7 @@ int score(Player top, Player down, float limit){
 	/*Si joueur du haut marque un point */
 	if ( horsLimite(top->balles, limit) == -1 || horsLimite(down->balles, limit) == -1 )
 	{
-		top->score = top->score + 1; 
+		down->vie--; 
 		return -1;
 	}
 
@@ -84,13 +83,8 @@ int score(Player top, Player down, float limit){
 
 void newBall(Player j, Point2D position, Vector2D direction){
 
-	if (j->nbBalles > 0)
-	{
 		j->balles->next = BallFabrik(position, direction, j->balles->color);
 		j->balles = j->balles->next;
-		j->nbBalles--;
 		j->balles->next = NULL;
-	}
-	return;
-	
+		return;	
 }

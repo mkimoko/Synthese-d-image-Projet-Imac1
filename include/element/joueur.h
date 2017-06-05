@@ -1,6 +1,5 @@
 #ifndef __JOUEUR__H
 #define __JOUEUR__H
-#define BALLMAX 2
 
 
 /** STRUCTURES **/
@@ -9,8 +8,7 @@ typedef struct Joueur
 {
 	Barres barre;
 	Balles balles;
-	int nbBalles;
-	int score;
+	int vie;
 } Joueur;
 typedef Joueur* Player;
 
