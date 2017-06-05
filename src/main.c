@@ -1,4 +1,5 @@
 #include <SDL/SDL.h>
+/*#include <SDL/SDL_image.h>*/
 #include <GL/gl.h>      
 #include <GL/glu.h>
 #include <stdlib.h>   
@@ -22,6 +23,9 @@ static const unsigned int BIT_PER_PIXEL = 32;
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;   
 
 int main(int argc, char** argv) {
+  /*GLuint textures[MAX];
+  char* filename = "fr.png";
+  SDL_Surface* surface;*/
   /* Initialisation de la SDL */
   if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
     fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");  
@@ -32,12 +36,56 @@ int main(int argc, char** argv) {
   if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_GL_DOUBLEBUFFER)) {
     fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
     return EXIT_FAILURE; 
-  }  
+  } 
+    
+  /** Charge la texture et teste si ca fonctionne **/
+  /*SDL_WM_SetCaption("Texture", NULL);
+  surface = IMG_Load(filename); 
+  if (surface == NULL)
+  {
+      printf("texture marche pas\n");
+  }
+  else
+  {
+    printf("texture marche !\n");
+  }*/
     
   gluOrtho2D(-1., 1., -1., 1.);               
       
-  /* Titre de la fenêtre */      
-  SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL);    
+  /* Titre de la fenêtre */       
+  SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL); 
+
+  /* demande à OpenGl 1 espace mémoire (< MAX) sur la CG pour placer nos textures
+  glGenTextures(1, textures);
+   on bind la texture sur la case 1 de "textures" 
+  glBindTexture(GL_TEXTURE_2D, textures[0]);
+  On modifie les paramètres de la texture (filtre de minification) 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  Determine le format des pixels 
+  GLenum format;
+  switch(surface->format->BytesPerPixel) {
+    case 1:
+      format = GL_RED;
+    break;
+    case 3:
+      Ne gere pas les machines big-endian (`a confirmer...)
+      format = GL_RGB;
+    break;
+    case 4:
+       Ne gere pas les machines big-endian (a confirmer...) 
+      format = GL_RGBA;
+    break;
+    default:
+      On ne traite pas les autres cas 
+      fprintf(stderr, "Format des pixels de l’image %s non pris en charge\n", filename);
+    return EXIT_FAILURE;
+  }
+
+   Envoie les données de la texture à OpenGL 
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, surface->w, surface->h, 0, format, GL_UNSIGNED_BYTE, surface->pixels);*/
+
+
    
  
   Wall mur = chargeLvl("../niveau/niveau1.lvl", 1, 0.05);              
@@ -47,7 +95,7 @@ int main(int argc, char** argv) {
 
   /*************************** BALLE 1*****************************/
   Point2D position1 = PointXY(0.9,0.5);
-  Vector2D direction1 = VectorXY(0,1);
+  Vector2D direction1 = VectorXY(0.6,0.7);
   Color3f color = ColorRGB(255,255,255);   
   Balles balles = BallFabrik(position1, direction1, color);             
 
@@ -73,7 +121,7 @@ int main(int argc, char** argv) {
 
   /*************************** BALLE 2*****************************/
   Point2D position2 = PointXY(-0.9,-0.5);
-  Vector2D direction2 = VectorXY(0,-1);
+  Vector2D direction2 = VectorXY(-0.6,-0.7);
   color = ColorRGB(255,255,255);
   balles = BallFabrik(position2, direction2, color); 
 
@@ -90,7 +138,7 @@ int main(int argc, char** argv) {
   barre = BarreFabrik(p1,p2,p3,p4,d2,color2);
   int boolean2 = 0;  
   
-  Player j2 = joueurFabrik(barre, balles); 
+  Player j2 = joueurFabrik(barre, balles);  
  
   /**************************FIN JOUEUR 2*******************************/
 
@@ -107,14 +155,23 @@ int main(int argc, char** argv) {
 /************************MATRICE DU MUR************************/
     glMatrixMode(GL_MODELVIEW);  
         glLoadIdentity();
+        /** Active le texturage 2D 
         glEnable(GL_TEXTURE_2D);
+        On binde notre texture pour l'appliquer sur le quad 
+        glBindTexture(GL_TEXTURE_2D, textures[0]);*/
+
+        glPushMatrix();
+
         glScalef(MYSCALE, MYSCALE, 1);
         drawMur(mur);
         collision(mur, j1, j2);
-        /*printf("Collision avec balle 1 = %d\n", collision(mur, j1, j2));*/
         collision(mur, j2, j1);
-        /*printf("Collision avec balle 2 = %d\n", collision(mur, j2, j1));*/
-    glPushMatrix(); 
+        glPopMatrix();
+
+        /** On dé-binde la texture 
+        glBindTexture(GL_TEXTURE_2D, 0);
+        Desactive le texturage 2D 
+        glDisable(GL_TEXTURE_2D);*/
 
 
 /**********************FIN MATRICE DU MUR*********************/
@@ -127,6 +184,7 @@ int main(int argc, char** argv) {
     /* ********************MATRICE DE LA BALLE 1********************* */
     glMatrixMode(GL_MODELVIEW);   
     glLoadIdentity(); 
+    glPushMatrix();
     glScalef(MYSCALE, MYSCALE, 1);  
     moveBall(j1->balles);
     j1->balles->position = Translation(j1->balles->position, MultVector(j1->balles->direction, MYSCALE) );
@@ -139,7 +197,7 @@ int main(int argc, char** argv) {
     glScalef(MYSCALE, MYSCALE, 1);
     drawBarre(j1->barre);
     moveBarre(j1->barre, boolean);
-    glPushMatrix();
+    glPopMatrix();
 
 
   /***********************CONTACT BARRE BALLE J1 + SHOOT**************************/
@@ -168,19 +226,21 @@ int main(int argc, char** argv) {
     /* ********************MATRICE DE LA BALLE 2********************* */
     glMatrixMode(GL_MODELVIEW);  
     glLoadIdentity();
+    glPushMatrix();
     glScalef(MYSCALE, MYSCALE, 1);
     moveBall(j2->balles);
     j2->balles->position = Translation(j2->balles->position, MultVector(j2->balles->direction, MYSCALE) );
     limiteRepere(j2->balles, 1/MYSCALE);
-    glPushMatrix();
+    glPopMatrix();
 
     /* ********************MATRICE DE LA BARRE 2********************* */
     glMatrixMode(GL_MODELVIEW);  
     glLoadIdentity();
+    glPushMatrix();
     glScalef(MYSCALE, MYSCALE, 1);
     drawBarre(j2->barre);
     moveBarre(j2->barre, boolean2);
-    glPushMatrix();
+    glPopMatrix();
  
 
     /***********************CONTACT BARRE BALLE J2 + SHOOT**************************/

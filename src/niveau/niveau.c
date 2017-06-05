@@ -82,7 +82,7 @@ void drawMur(Wall mur){
       if (mur->niveau[i].touche == 0)
       {
         glBegin(GL_QUADS);
-          glColor3d( 240, 195, 0 );
+          glColor3d( 255, 255, 0 );
           glVertex2f(mur->niveau[i].p1.x, mur->niveau[i].p1.y);
           glVertex2f(mur->niveau[i].p2.x, mur->niveau[i].p2.y);
           glVertex2f(mur->niveau[i].p3.x, mur->niveau[i].p3.y);
@@ -95,14 +95,6 @@ void drawMur(Wall mur){
 int collision(Wall wall, Player j, Player adv){
   for (int i = 0; i < wall->hauteur * wall->largeur; i++)
   {
-    printf("position en x de la balle = %f\n",j->balles->position.x );
-    printf("position en y de la balle = %f\n",j->balles->position.y );
-    printf("position en x de point p1 = %f\n",wall->niveau[i].p1.x-4 );
-    printf("position en x de point p2 = %f\n",wall->niveau[i].p2.x-4 );
-    printf("position en y de point p1 = %f\n",wall->niveau[i].p1.y+4 );
-    printf("position en x de point p3 = %f\n",wall->niveau[i].p3.y-4 );
-
-    printf("\n\n\n\n");
     if ( j->balles->position.x >= wall->niveau[i].p1.x-4  && j->balles->position.x <= wall->niveau[i].p2.x-4 && ( j->balles->position.y == wall->niveau[i].p1.y+4 || j->balles->position.y == wall->niveau[i].p3.y-4 ) )
     {
       
