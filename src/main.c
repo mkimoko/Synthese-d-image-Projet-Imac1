@@ -7,10 +7,12 @@
       
 #include "geometry/geometry.c"       
 #include "element/joueur.c"    
-#include "niveau/niveau.c"     
+#include "niveau/niveau.c"      
     
 
-#define MYSCALE 0.05     
+#define MYSCALE 0.05 
+
+/* TOUCHE A & Z POUR JOUEUR DE DESSUS         FLECHE DIRECTIONNELLE POUR LE JOUEUR DU BAS*/    
 
 /* Dimensions de la fenêtre */ 
 static unsigned int WINDOW_WIDTH = 800;       
@@ -50,8 +52,8 @@ int main(int argc, char** argv) {
     printf("texture marche !\n");
   }*/
     
-  gluOrtho2D(-1., 1., -1., 1.);               
-      
+  gluOrtho2D(-1., 1., -1., 1.);                                                 
+         
   /* Titre de la fenêtre */       
   SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL); 
 
@@ -59,7 +61,7 @@ int main(int argc, char** argv) {
   glGenTextures(1, textures);
    on bind la texture sur la case 1 de "textures" 
   glBindTexture(GL_TEXTURE_2D, textures[0]);
-  On modifie les paramètres de la texture (filtre de minification) 
+  On modifie les paramètres de la texture (filtre de minification)     
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   Determine le format des pixels 
@@ -88,31 +90,31 @@ int main(int argc, char** argv) {
 
    
  
-  Wall mur = chargeLvl("../niveau/niveau1.lvl", 1, 0.05);              
+  Wall mur = chargeLvl("../niveau/niveau1.lvl", 1, 0.05);                           
      
   
   /****************************JOUEUR 1*************************************/
 
-  /*************************** BALLE 1*****************************/
-  Point2D position1 = PointXY(0.9,0.5);
-  Vector2D direction1 = VectorXY(0.6,0.7);
+  /*************************** BALLE 1*****************************/  
+  Point2D position1 = PointXY(-0.4,-0.75);
+  Vector2D direction1 = VectorXY(-0.6,-0.7);
   Color3f color = ColorRGB(255,255,255);   
   Balles balles = BallFabrik(position1, direction1, color);             
 
   /***********************BARRE 1***********************/
 
   Point2D p1 = PointXY(0.2/MYSCALE,-0.85/MYSCALE);
-  Point2D p2 = PointXY(-0.2/MYSCALE,-0.85/MYSCALE);  
+  Point2D p2 = PointXY(-0.2/MYSCALE,-0.85/MYSCALE);    
   Point2D p3 = PointXY(0.2/MYSCALE,-0.9/MYSCALE); 
   Point2D p4 = PointXY(-0.2/MYSCALE,-0.9/MYSCALE); 
-
+ 
   Vector2D d1 = VectorXY(1,0); 
   Color3f color2 = ColorRGB(255, 0, 0);
 
-  Barres barre = BarreFabrik(p1,p2,p3,p4,d1,color2);
+  Barres barre = BarreFabrik(p1,p2,p3,p4,d1,color2); 
   int boolean = 0; 
-  
-  Player j1 = joueurFabrik(barre, balles);  
+   
+  Player j1 = joueurFabrik(barre, balles);            
 
   /**************************FIN JOUEUR 1*******************************/
 
@@ -120,11 +122,11 @@ int main(int argc, char** argv) {
 /****************************JOUEUR 2*************************************/
 
   /*************************** BALLE 2*****************************/
-  Point2D position2 = PointXY(-0.9,-0.5);
-  Vector2D direction2 = VectorXY(-0.6,-0.7);
+  Point2D position2 = PointXY(0.4,0.75);
+  Vector2D direction2 = VectorXY(0.6,0.7);
   color = ColorRGB(255,255,255);
   balles = BallFabrik(position2, direction2, color); 
-
+  
   /***********************BARRE 2***********************/
 
   p1 = PointXY(0.2/MYSCALE,0.85/MYSCALE);
@@ -137,32 +139,32 @@ int main(int argc, char** argv) {
   
   barre = BarreFabrik(p1,p2,p3,p4,d2,color2);
   int boolean2 = 0;  
-  
-  Player j2 = joueurFabrik(barre, balles);  
+   
+  Player j2 = joueurFabrik(barre, balles);   
  
   /**************************FIN JOUEUR 2*******************************/
 
 
-  /* Boucle d'affichage */
-  int loop = 1;
+  /* Boucle d'affichage */ 
+  int loop = 1; 
   while(loop) {
-    /* Récupération du temps au début de la boucle */
+    /* Récupération du temps au début de la boucle */ 
     Uint32 startTime = SDL_GetTicks(); 
     
-    /* Placer ici le code de dessin */
-    glClear(GL_COLOR_BUFFER_BIT); 
- 
-/************************MATRICE DU MUR************************/
-    glMatrixMode(GL_MODELVIEW);  
-        glLoadIdentity();
-        /** Active le texturage 2D 
+    /* Placer ici le code de dessin */    
+    glClear(GL_COLOR_BUFFER_BIT);     
+  
+/************************MATRICE DU MUR************************/  
+    glMatrixMode(GL_MODELVIEW);     
+        glLoadIdentity(); 
+        /** Active le texturage 2D  
         glEnable(GL_TEXTURE_2D);
         On binde notre texture pour l'appliquer sur le quad 
-        glBindTexture(GL_TEXTURE_2D, textures[0]);*/
+        glBindTexture(GL_TEXTURE_2, textures[0]);*/
 
         glPushMatrix();
 
-        glScalef(MYSCALE, MYSCALE, 1);
+        glScalef(MYSCALE, MYSCALE, 1);   
         drawMur(mur);
         collision(mur, j1, j2);
         collision(mur, j2, j1);
@@ -353,7 +355,7 @@ int main(int argc, char** argv) {
           
         }
 
-        if ( j1->vie == 0 )
+          if ( j1->vie == 0 )
           {
                 printf("Le joueur 2 a gagné\n");
                 loop = 0;
@@ -364,7 +366,7 @@ int main(int argc, char** argv) {
                 printf("Le joueur 1 a gagné\n");
                 loop = 0;
           }
-        }  
+      }  
  
 
     /* Echange du front et du back buffer : mise à jour de la fenêtre */
@@ -468,8 +470,6 @@ int main(int argc, char** argv) {
         default:
           break;
       }
-
-
     }
 
     /* Calcul du temps écoulé */
@@ -479,9 +479,8 @@ int main(int argc, char** argv) {
       SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
     }
   }
-  
   /* Liberation des ressources associées à la SDL */ 
   SDL_Quit();
-  
+
   return EXIT_SUCCESS;
 }

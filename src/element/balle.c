@@ -38,7 +38,7 @@ void limiteRepere(Balles balles, float limit){
 
 	Vector2D normal = Normalize(balles-> direction);
 
-	if ( ( balles->position.x <= -(limit-4)  && balles->position.y <= limit-4 && balles->position.y >= -(limit-4) )  ||  ( balles->position.x >= (limit-4)  && balles->position.y <= limit-4 && balles->position.y >= -(limit-4) ) )
+	if ( ( balles->position.x <= -(limit-2)  && balles->position.y <= limit-2 && balles->position.y >= -(limit-2) )  ||  ( balles->position.x >= (limit-2)  && balles->position.y <= limit-2 && balles->position.y >= -(limit-2) ) )
 	{
 		balles->direction.x = balles->direction.x * (-1);
 

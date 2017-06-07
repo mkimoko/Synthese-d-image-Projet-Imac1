@@ -17,13 +17,13 @@ Brik brikFabrik(Point2D p1, Point2D p2, Point2D p3, Point2D p4, int propriete){
 
 }
 
-
-Wall chargeLvl(char *chemin, int limit, float ecart){
+/*Probleme au niveau de l'attribution des points des briques => problème affichage*/
+Wall chargeLvl(char *chemin, float limit, float ecart){
 
 	char caractereActuel;
 	FILE *fichier = malloc(sizeof(FILE));
 	fichier = fopen(chemin,"r+");
-	int i = 0, j = 0;
+	int i = 0;
   Point2D p1, p2, p3, p4;
   Wall mur = malloc(sizeof(Mur));
 
@@ -46,32 +46,31 @@ Wall chargeLvl(char *chemin, int limit, float ecart){
 
     } while (i <= 4);
 
-    int max = 0;
-
-    if (mur->hauteur >= mur->largeur)
-      max = mur->hauteur;
-    else
-      max = mur->largeur;
+    int espace = 0;
 
 
-    for (i = 0; i <= max*max; i++)
+    for (i = 0; i <= mur->hauteur * mur->largeur * 2; i++)
     {
-      for (j = 0; j <= mur->largeur * 2; j++)
-      {
-        p1 = PointXY( 20*(limit-ecart + i*( limit/mur->largeur )), 20*( (limit/4) - i*(limit/mur->hauteur+ecart) - (limit/mur->hauteur+ecart) ) );
-        p2 = PointXY( 20*(-limit+ecart + i*limit/mur->largeur), 20*( (limit/4) - i*(limit/mur->hauteur+ecart) - (limit/mur->hauteur+ecart) ) );
-        p3 = PointXY( p2.x, 20*( (limit/4) - i*(limit/mur->hauteur+ecart) ) );
-        p4 = PointXY( (p1.x), 20*( (limit/4) - i*(limit/mur->hauteur+ecart) ) );
-
-        
-      }
       caractereActuel = fgetc(fichier); // On lit le caractère
-
-      if ( caractereActuel !=  ' '  && caractereActuel !=  EOF)
-       {
-           mur->niveau[i] = brikFabrik(p1, p2, p3, p4, atoi(&caractereActuel) );
+      if ( caractereActuel !=  ' ' ){
+        if (caractereActuel ==  EOF)
+        {
+          return mur;
         }
+
+        p1 = PointXY( -20*(limit - i*( limit/mur->largeur )+espace) , 20*( (limit/4) - (limit/mur->hauteur+ecart) ) );
+        
+
+        p2 = PointXY( -20*(limit - (i+1)*( limit/mur->largeur )+espace), 20*( (limit/4) - (limit/mur->hauteur+ecart) ) );
+        
+        p3 = PointXY( p2.x, 20*( (limit/mur->hauteur/mur->hauteur) ) );
+        
+        p4 = PointXY( (p1.x), 20*( (limit/mur->hauteur/mur->hauteur) ) );
+
+        mur->niveau[i] = brikFabrik(p1, p2, p3, p4, caractereActuel);
       }
+        
+  }
       return mur;
   }
 
@@ -92,12 +91,33 @@ void drawMur(Wall mur){
     }     
 }
 
+/*Fonction collision ne marche pas correctement pour le bon déroulement de la partie nous avons décider de le laisser en commentaire
+  Vous pouvez néamoins les enlevés pour voir ce que fait la fonction*/
+
 int collision(Wall wall, Player j, Player adv){
+
+  /*Vector2D normal = Normalize(j->balles-> direction);
   for (int i = 0; i < wall->hauteur * wall->largeur; i++)
   {
-    if ( j->balles->position.x >= wall->niveau[i].p1.x-4  && j->balles->position.x <= wall->niveau[i].p2.x-4 && ( j->balles->position.y == wall->niveau[i].p1.y+4 || j->balles->position.y == wall->niveau[i].p3.y-4 ) )
+
+    if (wall->niveau[i].touche == 0)
     {
-      
+      if ( ( (j->balles->position.y <= wall->niveau[i].p1.y+2  && j->balles->position.y >= wall->niveau[i].p2.y+2) && ( j->balles->position.x <= wall->niveau[i].p1.x-2 || j->balles->position.x >= wall->niveau[i].p3.x+2) )   ||     ( (j->balles->position.x >= wall->niveau[i].p1.x+2  && j->balles->position.x <= wall->niveau[i].p2.x+2) && ( j->balles->position.y >= wall->niveau[i].p1.y+2 || j->balles->position.y >= wall->niveau[i].p4.y+2) ) )
+      {
+
+        j->balles->direction.x = j->balles->direction.x * (-1);
+
+
+        if (j->balles->position.y <= normal.y)
+          {
+            j->balles->direction.y = normal.y + fabs( normal.y - j->balles->direction.y); 
+          }
+
+        if (j->balles->position.y >= normal.y)
+          {
+            j->balles->direction.y = normal.y - fabs( normal.y - j->balles->direction.y); 
+          }
+
         wall->niveau[i].touche = 1;
         if (wall->niveau[i].propriete == 1)
         {
@@ -127,9 +147,11 @@ int collision(Wall wall, Player j, Player adv){
 
         shoot(j->balles);
         return 1 ;
+      }
     }
+    
   }
-  return 0;
+  return 0;*/
 
 }
 
