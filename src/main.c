@@ -1,12 +1,12 @@
-#include <SDL/SDL.h>
+#include <SDL/SDL.h> 
 /*#include <SDL/SDL_image.h>*/
-#include <GL/gl.h>      
-#include <GL/glu.h>
+#include <GL/gl.h>              
+#include <GL/glu.h>        
 #include <stdlib.h>   
 #include <stdio.h>                     
       
 #include "geometry/geometry.c"       
-#include "element/joueur.c"    
+#include "element/joueur.c"     
 #include "niveau/niveau.c"      
     
 
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
   gluOrtho2D(-1., 1., -1., 1.);                                                 
          
   /* Titre de la fenêtre */       
-  SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL); 
+  SDL_WM_SetCaption("S we begin this arkanopong ?!", NULL); 
 
   /* demande à OpenGl 1 espace mémoire (< MAX) sur la CG pour placer nos textures
   glGenTextures(1, textures);
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
       format = GL_RGB;
     break;
     case 4:
-       Ne gere pas les machines big-endian (a confirmer...) 
+       Ne gere pas les machines big-endian (a confirmer...)   
       format = GL_RGBA;
     break;
     default:
@@ -90,13 +90,13 @@ int main(int argc, char** argv) {
 
    
  
-  Wall mur = chargeLvl("../niveau/niveau1.lvl", 1, 0.05);                           
-     
-  
+  Wall mur = chargeLvl("../niveau/niveau1.lvl", 1, 0.05);     
+  Placement(mur, 1/MYSCALE); 
+
   /****************************JOUEUR 1*************************************/
 
   /*************************** BALLE 1*****************************/  
-  Point2D position1 = PointXY(-0.4,-0.75);
+  Point2D position1 = PointXY(-0.4,-0.75); 
   Vector2D direction1 = VectorXY(-0.6,-0.7);
   Color3f color = ColorRGB(255,255,255);   
   Balles balles = BallFabrik(position1, direction1, color);             
@@ -114,11 +114,11 @@ int main(int argc, char** argv) {
   Barres barre = BarreFabrik(p1,p2,p3,p4,d1,color2); 
   int boolean = 0; 
    
-  Player j1 = joueurFabrik(barre, balles);            
+  Player j1 = joueurFabrik(barre, balles);             
 
   /**************************FIN JOUEUR 1*******************************/
 
-
+ 
 /****************************JOUEUR 2*************************************/
 
   /*************************** BALLE 2*****************************/
@@ -128,11 +128,11 @@ int main(int argc, char** argv) {
   balles = BallFabrik(position2, direction2, color); 
   
   /***********************BARRE 2***********************/
-
+ 
   p1 = PointXY(0.2/MYSCALE,0.85/MYSCALE);
   p2 = PointXY(-0.2/MYSCALE,0.85/MYSCALE);
   p3 = PointXY(0.2/MYSCALE,0.9/MYSCALE);
-  p4 = PointXY(-0.2/MYSCALE,0.9/MYSCALE);
+  p4 = PointXY(-0.2/MYSCALE,0.9/MYSCALE); 
 
   Vector2D d2 = VectorXY(1,0);
   color2 = ColorRGB(0, 0, 255);
@@ -140,34 +140,35 @@ int main(int argc, char** argv) {
   barre = BarreFabrik(p1,p2,p3,p4,d2,color2);
   int boolean2 = 0;  
    
-  Player j2 = joueurFabrik(barre, balles);   
+  Player j2 = joueurFabrik(barre, balles);      
  
   /**************************FIN JOUEUR 2*******************************/
+  
 
 
   /* Boucle d'affichage */ 
   int loop = 1; 
   while(loop) {
-    /* Récupération du temps au début de la boucle */ 
+    /* Récupération du temps au début de la boucle */  
     Uint32 startTime = SDL_GetTicks(); 
     
     /* Placer ici le code de dessin */    
     glClear(GL_COLOR_BUFFER_BIT);     
   
 /************************MATRICE DU MUR************************/  
-    glMatrixMode(GL_MODELVIEW);     
-        glLoadIdentity(); 
-        /** Active le texturage 2D  
+    glMatrixMode(GL_MODELVIEW);              
+        glLoadIdentity();  
+        /** Active le texturage 2D       
         glEnable(GL_TEXTURE_2D);
         On binde notre texture pour l'appliquer sur le quad 
         glBindTexture(GL_TEXTURE_2, textures[0]);*/
 
-        glPushMatrix();
+        glPushMatrix(); 
 
-        glScalef(MYSCALE, MYSCALE, 1);   
+        glScalef(MYSCALE, MYSCALE, 1);    
         drawMur(mur);
-        collision(mur, j1, j2);
-        collision(mur, j2, j1);
+        /*collision(mur, j1, j2);
+        collision(mur, j2, j1);*/
         glPopMatrix();
 
         /** On dé-binde la texture 

@@ -27,8 +27,8 @@ typedef Mur* Wall;
 
 /** FONCTIONS **/
 Brik brikFabrik(Point2D p1, Point2D p2, Point2D p3, Point2D p4, int propriete);
-Wall chargeLvl(char *chemin, int limit, float ecart);
+Wall chargeLvl(char *chemin, float limit, float ecart);
 int collision(Wall wall, Player j, Player adv);
-
+void Placement(Wall mur, int limit);
 
 #endif
