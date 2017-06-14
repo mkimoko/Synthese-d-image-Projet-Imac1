@@ -1,13 +1,13 @@
-#include <SDL/SDL.h> 
-/*#include <SDL/SDL_image.h>*/
+#include <SDL/SDL.h>    
+/*#include <SDL/SDL_image.h>*/            
 #include <GL/gl.h>              
-#include <GL/glu.h>        
+#include <GL/glu.h>         
 #include <stdlib.h>   
-#include <stdio.h>                     
-      
-#include "geometry/geometry.c"       
-#include "element/joueur.c"     
-#include "niveau/niveau.c"      
+#include <stdio.h>                      
+        
+#include "geometry/geometry.c"        
+#include "element/joueur.c"       
+#include "niveau/niveau.c"        
     
 
 #define MYSCALE 0.05 

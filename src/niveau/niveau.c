@@ -72,42 +72,42 @@ void Placement(Wall mur, int limit){
 
   float x1 = 0, y1 = 0, x2 = 0, y2 = 0 , x3 = 0, y3 = 0, x4 = 0, y4 = 0;
 
-  for (cpt = 0; cpt < mur->hauteur * mur->largeur ; cpt++)
+  for (i = 0; i < mur->hauteur ; i++)
   {
-    if (x1 >= limit-2)
+    for ( j = 0; j < mur->largeur; j++)
     {
-      i = 0;
-      j++;
-    }
-    /*P1*/
-      x1 = (-limit + i*(limit/mur->largeur));
-      y1 = (limit/2 - limit/(mur->hauteur) - j*(limit/mur->hauteur)) ;
+      /*P1*/
+      x1 = (-limit + j*(limit/mur->largeur));
+      y1 = (limit/2 + (limit/(mur->hauteur))/mur->hauteur - i*(limit/mur->hauteur)) ;
       mur->niveau[cpt].p1 = PointXY( x1,y1 );
 
-    /*P2*/
-      x2 = (-limit + (i+1)*(limit/mur->largeur));
-      y2 = (limit/2 - limit/(mur->hauteur) - j*(limit/mur->hauteur));
-      mur->niveau[cpt].p2 = PointXY( x2,y2 );
+      /*P2*/
+        x2 = (-limit + (j+1)*(limit/mur->largeur));
+        y2 = (limit/2 + (limit/(mur->hauteur))/mur->hauteur - i*(limit/mur->hauteur));
+        mur->niveau[cpt].p2 = PointXY( x2,y2 );
 
-    /*P3*/
-      x3 = (-limit + (i+1)*(limit/mur->largeur));
-      y3 = (limit/2 - limit/(mur->hauteur) - (j+1)*(limit/mur->hauteur));
-      mur->niveau[cpt].p3 = PointXY( x3,y3 );
+      /*P3*/
+        x3 = (-limit + (j+1)*(limit/mur->largeur));
+        y3 = (limit/2 + (limit/(mur->hauteur))/mur->hauteur - (i+1)*(limit/mur->hauteur));
+        mur->niveau[cpt].p3 = PointXY( x3,y3 );
 
-    /*P4*/
-      x4 = (-limit + i*(limit/mur->largeur));
-      y4 = (limit/2 - limit/(mur->hauteur) - (j+1)*(limit/mur->hauteur));
-      mur->niveau[cpt].p4 = PointXY( x4,y4 );
-
-
-      i++;
-
-      printf("\n");
+      /*P4*/
+        x4 = (-limit + j*(limit/mur->largeur));
+        y4 = (limit/2 + (limit/(mur->hauteur))/mur->hauteur - (i+1)*(limit/mur->hauteur));
+        mur->niveau[cpt].p4 = PointXY( x4,y4 );
+        
+        printf("\n");
       printf("%d - Les coordonnées de p1: x= %f  y= %f \n",cpt, mur->niveau[cpt].p1.x, mur->niveau[cpt].p1.y );
       printf("%d - Les coordonnées de p2: x= %f  y= %f \n",cpt, mur->niveau[cpt].p2.x, mur->niveau[cpt].p2.y );
       printf("%d - Les coordonnées de p3: x= %f  y= %f \n",cpt, mur->niveau[cpt].p3.x, mur->niveau[cpt].p3.y );
       printf("%d - Les coordonnées de p4: x= %f  y= %f \n",cpt, mur->niveau[cpt].p4.x, mur->niveau[cpt].p4.y );
+
+
+        cpt++;
+    }
   }
+
+      
 
     
 
