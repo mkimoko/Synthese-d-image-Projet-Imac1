@@ -36,13 +36,11 @@ Wall chargeLvl(char *chemin, float limit, float ecart){
             if (i == 0)
             {
               mur->largeur = atoi(&caractereActuel);
-              printf("La largeure du mur est de %d\n", mur->largeur);
             }
 
             if (i == 2)
             {
               mur->hauteur = atoi(&caractereActuel);
-              printf("La longueur du mur est de %d\n", mur->hauteur);
             }
           }
           i++;
@@ -57,7 +55,6 @@ Wall chargeLvl(char *chemin, float limit, float ecart){
           return mur;
 
         mur->niveau[cpt].propriete = atoi(&caractereActuel);
-        printf("La propriete du %de bric est %d\n",cpt+1, mur->niveau[cpt].propriete );
         cpt++;
       }
         
@@ -74,7 +71,7 @@ void Placement(Wall mur, int limit){
 
   float x1 = 0, y1 = 0, x2 = 0, y2 = 0 , x3 = 0, y3 = 0, x4 = 0, y4 = 0;
 
-  for (haut = 0; haut < 1/* mur->hauteur */; haut++)
+  for (haut = 0; haut < mur->hauteur ; haut++)
   {
     for ( large = 0; large < mur->largeur; large++)
     {
@@ -97,15 +94,9 @@ void Placement(Wall mur, int limit){
       x4 = (posX + large*decalX);
       y4 = (posY - (haut+1)*decalY);
       mur->niveau[cpt].p4 = PointXY( x4,y4 );
-        
-        printf("\n");
-      printf("%d - Les coordonnées de p1: x= %f  y= %f \n",cpt, mur->niveau[cpt].p1.x, mur->niveau[cpt].p1.y );
-      printf("%d - Les coordonnées de p2: x= %f  y= %f \n",cpt, mur->niveau[cpt].p2.x, mur->niveau[cpt].p2.y );
-      printf("%d - Les coordonnées de p3: x= %f  y= %f \n",cpt, mur->niveau[cpt].p3.x, mur->niveau[cpt].p3.y );
-      printf("%d - Les coordonnées de p4: x= %f  y= %f \n",cpt, mur->niveau[cpt].p4.x, mur->niveau[cpt].p4.y );
-
-
-        cpt++;
+      mur->niveau[cpt].touche = 0;
+      
+      cpt++;
     }
   }
 }
@@ -122,13 +113,12 @@ void drawBrik(Brik brik){
 
 void drawMur(Wall mur){
     
-    for (int i = 0; i < mur->largeur; i++)
+    for (int i = 0; i < mur->largeur * mur->hauteur; i++)
     {
-      /*if (mur->niveau[i].touche == 0)
-      {*/
+      if (mur->niveau[i].touche == 0)
+      {
         drawBrik(mur->niveau[i]);
-        printf(" la brique = %d\n",i );
-      /*}*/
+      }
     }     
 }
 
@@ -143,77 +133,33 @@ int collision(Wall wall, Player j, Player adv){
 
     if (wall->niveau[i].touche == 0)
     {
-      /*Balle arrivant par le bas*
-      if ()
+      /*Balle arrivant par le bas*/
+      if (j->balles->direction.y > 0 && j->balles->position.y >= wall->niveau[i].p3.y-2 && j->balles->position.x <= wall->niveau[i].p3.x+2 && j->balles->position.x >= wall->niveau[i].p4.x-2)
       {
-        /*shoot vers le haut
-        shoot(j->balles); 
+        /*shoot vers le haut*/
+        shoot(j->balles);
+        wall->niveau[i].touche = 1;
+ 
         return 1;     
-      }*/
+      }
 
-      /*Balle arrivant par le haut*
-      if ()
+      /*Balle arrivant par le haut*/
+      if (j->balles->direction.y < 0 && j->balles->position.y <= wall->niveau[i].p1.y+2 && j->balles->position.x <= wall->niveau[i].p2.x+2 && j->balles->position.x >= wall->niveau[i].p1.x-2)
       {
-        /*shoot vers le haut*
+        /*shoot vers le haut*/
         shoot(j->balles); 
+        wall->niveau[i].touche = 1;
+        printf("touche = %d\n",wall->niveau[i].touche );
+
         return 1;     
-      }*/
+      }
 
     }
 
-    /*contactBrik(wall->niveau[i], j);*/
   }
 
   return 0;
-
 }
 
-
-void contactBrik (Brik brik, Player j){
-
-  /*Vector2D normal = Normalize(j->balles-> direction);
-
-  /*Balle arrivant par le coté droit
-  if ( j->balles->position.x <= brik.p2.x /* && j->balles->direction.x < 0  && j->balles->position.y <= brik.p2.y && j->balles->position.y >= brik.p3.y)
-      {
-        
-        j->balles->direction.x = j->balles->direction.x * (-1);
-
-
-        if (j->balles->position.y <= normal.y)
-          {
-            j->balles->direction.y = normal.y + fabs( normal.y - j->balles->direction.y); 
-          }
-
-
-
-        if (j->balles->position.y >= normal.y)
-          {
-            j->balles->direction.y = normal.y - fabs( normal.y - j->balles->direction.y); 
-          }
-
-      }
-
-      /*Balle arrivant par le coté gauche
-      if ( j->balles->position.x >= brik.p1.x /*&& j->balles->direction.x > 0 && j->balles->position.y <= brik.p1.y && j->balles->position.y >= brik.p4.y)
-      {
-        
-        j->balles->direction.x = j->balles->direction.x * (-1);
-
-
-        if (j->balles->position.y <= normal.y)
-          {
-            j->balles->direction.y = normal.y + fabs( normal.y - j->balles->direction.y); 
-          }
-
-
-
-        if (j->balles->position.y >= normal.y)
-          {
-            j->balles->direction.y = normal.y - fabs( normal.y - j->balles->direction.y); 
-          }
-
-      }*/
-}
 
 

@@ -1,13 +1,13 @@
-#include <SDL/SDL.h>    
+#include <SDL/SDL.h>     
 /*#include <SDL/SDL_image.h>*/            
-#include <GL/gl.h>              
+#include <GL/gl.h>                    
 #include <GL/glu.h>         
 #include <stdlib.h>   
 #include <stdio.h>                      
-        
+         
 #include "geometry/geometry.c"         
 #include "element/joueur.c"         
-#include "niveau/niveau.c"        
+#include "niveau/niveau.c"         
     
 
 #define MYSCALE 0.05 
@@ -88,18 +88,18 @@ int main(int argc, char** argv) {
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, surface->w, surface->h, 0, format, GL_UNSIGNED_BYTE, surface->pixels);*/
 
 
-   
+      
  
-  Wall mur = chargeLvl("../niveau/niveau1.lvl", 1, 0.05);     
+  Wall mur = chargeLvl("../niveau/niveau1.lvl", 1, 0.05);      
   Placement(mur, 1/MYSCALE); 
 
   /****************************JOUEUR 1*************************************/
 
   /*************************** BALLE 1*****************************/  
-  Point2D position1 = PointXY(-0.4,-0.75); 
-  Vector2D direction1 = VectorXY(-0.6,-0.7);
+  Point2D position1 = PointXY(0,14.5); 
+  Vector2D direction1 = VectorXY(0.4,-1);
   Color3f color = ColorRGB(255,255,255);   
-  Balles balles = BallFabrik(position1, direction1, color);             
+  Balles balles = BallFabrik(position1, direction1, color);              
 
   /***********************BARRE 1***********************/
 
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
   Point2D p3 = PointXY(0.2/MYSCALE,-0.9/MYSCALE); 
   Point2D p4 = PointXY(-0.2/MYSCALE,-0.9/MYSCALE); 
  
-  Vector2D d1 = VectorXY(1,0); 
+  Vector2D d1 = VectorXY(3,0); 
   Color3f color2 = ColorRGB(255, 0, 0);
 
   Barres barre = BarreFabrik(p1,p2,p3,p4,d1,color2); 
@@ -122,8 +122,8 @@ int main(int argc, char** argv) {
 /****************************JOUEUR 2*************************************/
 
   /*************************** BALLE 2*****************************/
-  Point2D position2 = PointXY(0.4,0.75);
-  Vector2D direction2 = VectorXY(0.6,0.7);
+  Point2D position2 = PointXY(0,-14.5);
+  Vector2D direction2 = VectorXY(-0.4,1);
   color = ColorRGB(255,255,255);
   balles = BallFabrik(position2, direction2, color); 
   
@@ -134,8 +134,8 @@ int main(int argc, char** argv) {
   p3 = PointXY(0.2/MYSCALE,0.9/MYSCALE);
   p4 = PointXY(-0.2/MYSCALE,0.9/MYSCALE); 
 
-  Vector2D d2 = VectorXY(1,0);
-  color2 = ColorRGB(0, 0, 255);
+  Vector2D d2 = VectorXY(2.6,0);
+  color2 = ColorRGB(0, 0, 255); 
   
   barre = BarreFabrik(p1,p2,p3,p4,d2,color2);
   int boolean2 = 0;  
@@ -146,17 +146,17 @@ int main(int argc, char** argv) {
   
 
 
-  /* Boucle d'affichage */  
-  int loop = 1;  
+  /* Boucle d'affichage */   
+  int loop = 1;   
   while(loop) {
     /* Récupération du temps au début de la boucle */        
-    Uint32 startTime = SDL_GetTicks();               
+    Uint32 startTime = SDL_GetTicks();                   
       
     /* Placer ici le code de dessin */       
-    glClear(GL_COLOR_BUFFER_BIT);      
+    glClear(GL_COLOR_BUFFER_BIT);       
   
 /************************MATRICE DU MUR************************/  
-    glMatrixMode(GL_MODELVIEW);              
+    glMatrixMode(GL_MODELVIEW);                
         glLoadIdentity();  
         /** Active le texturage 2D        
         glEnable(GL_TEXTURE_2D);
@@ -175,7 +175,7 @@ int main(int argc, char** argv) {
         glBindTexture(GL_TEXTURE_2D, 0);
         Desactive le texturage 2D 
         glDisable(GL_TEXTURE_2D);*/
-
+ 
 
 /**********************FIN MATRICE DU MUR*********************/
 
