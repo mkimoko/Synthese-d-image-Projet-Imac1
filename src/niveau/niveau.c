@@ -122,12 +122,13 @@ void drawBrik(Brik brik){
 
 void drawMur(Wall mur){
     
-    for (int i = 0; i < mur->hauteur * mur->largeur; i++)
+    for (int i = 0; i < mur->largeur; i++)
     {
-      if (mur->niveau[i].touche == 0)
-      {
+      /*if (mur->niveau[i].touche == 0)
+      {*/
         drawBrik(mur->niveau[i]);
-      }
+        printf(" la brique = %d\n",i );
+      /*}*/
     }     
 }
 

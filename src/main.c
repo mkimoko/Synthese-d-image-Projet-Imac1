@@ -150,10 +150,10 @@ int main(int argc, char** argv) {
   int loop = 1;  
   while(loop) {
     /* Récupération du temps au début de la boucle */        
-    Uint32 startTime = SDL_GetTicks();            
+    Uint32 startTime = SDL_GetTicks();               
       
     /* Placer ici le code de dessin */       
-    glClear(GL_COLOR_BUFFER_BIT);     
+    glClear(GL_COLOR_BUFFER_BIT);      
   
 /************************MATRICE DU MUR************************/  
     glMatrixMode(GL_MODELVIEW);              
