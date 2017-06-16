@@ -5,8 +5,8 @@
 #include <stdlib.h>   
 #include <stdio.h>                      
         
-#include "geometry/geometry.c"        
-#include "element/joueur.c"       
+#include "geometry/geometry.c"         
+#include "element/joueur.c"         
 #include "niveau/niveau.c"        
     
 
@@ -146,19 +146,19 @@ int main(int argc, char** argv) {
   
 
 
-  /* Boucle d'affichage */ 
-  int loop = 1; 
+  /* Boucle d'affichage */  
+  int loop = 1;  
   while(loop) {
-    /* Récupération du temps au début de la boucle */  
-    Uint32 startTime = SDL_GetTicks(); 
-    
-    /* Placer ici le code de dessin */    
+    /* Récupération du temps au début de la boucle */        
+    Uint32 startTime = SDL_GetTicks();            
+      
+    /* Placer ici le code de dessin */       
     glClear(GL_COLOR_BUFFER_BIT);     
   
 /************************MATRICE DU MUR************************/  
     glMatrixMode(GL_MODELVIEW);              
         glLoadIdentity();  
-        /** Active le texturage 2D       
+        /** Active le texturage 2D        
         glEnable(GL_TEXTURE_2D);
         On binde notre texture pour l'appliquer sur le quad 
         glBindTexture(GL_TEXTURE_2, textures[0]);*/
@@ -167,8 +167,8 @@ int main(int argc, char** argv) {
 
         glScalef(MYSCALE, MYSCALE, 1);    
         drawMur(mur);
-        /*collision(mur, j1, j2);
-        collision(mur, j2, j1);*/
+        collision(mur, j1, j2);
+        collision(mur, j2, j1);
         glPopMatrix();
 
         /** On dé-binde la texture 

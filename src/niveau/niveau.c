@@ -65,36 +65,38 @@ Wall chargeLvl(char *chemin, float limit, float ecart){
     return mur;
   }
 
-
+ 
 void Placement(Wall mur, int limit){
-  float i = 0, j = 0;
+  int haut = 0, large = 0;
   int cpt = 0;
+  float decalX = 2*limit/mur->largeur, decalY = limit/mur->hauteur, posX = -limit, posY = limit/2 ;
+
 
   float x1 = 0, y1 = 0, x2 = 0, y2 = 0 , x3 = 0, y3 = 0, x4 = 0, y4 = 0;
 
-  for (i = 0; i < mur->hauteur ; i++)
+  for (haut = 0; haut < 1/* mur->hauteur */; haut++)
   {
-    for ( j = 0; j < mur->largeur; j++)
+    for ( large = 0; large < mur->largeur; large++)
     {
       /*P1*/
-      x1 = (-limit + j*(limit/mur->largeur));
-      y1 = (limit/2 + (limit/(mur->hauteur))/mur->hauteur - i*(limit/mur->hauteur)) ;
+      x1 = (posX + large*decalX) ;
+      y1 = (posY - haut*decalY) ;
       mur->niveau[cpt].p1 = PointXY( x1,y1 );
 
       /*P2*/
-        x2 = (-limit + (j+1)*(limit/mur->largeur));
-        y2 = (limit/2 + (limit/(mur->hauteur))/mur->hauteur - i*(limit/mur->hauteur));
-        mur->niveau[cpt].p2 = PointXY( x2,y2 );
+      x2 = (posX + (large+1)*decalX);
+      y2 = (posY - haut*decalY);
+      mur->niveau[cpt].p2 = PointXY( x2,y2 );
 
       /*P3*/
-        x3 = (-limit + (j+1)*(limit/mur->largeur));
-        y3 = (limit/2 + (limit/(mur->hauteur))/mur->hauteur - (i+1)*(limit/mur->hauteur));
-        mur->niveau[cpt].p3 = PointXY( x3,y3 );
+      x3 = (posX + (large+1)*decalX);
+      y3 = (posY - (haut+1)*decalY);
+      mur->niveau[cpt].p3 = PointXY( x3,y3 );
 
       /*P4*/
-        x4 = (-limit + j*(limit/mur->largeur));
-        y4 = (limit/2 + (limit/(mur->hauteur))/mur->hauteur - (i+1)*(limit/mur->hauteur));
-        mur->niveau[cpt].p4 = PointXY( x4,y4 );
+      x4 = (posX + large*decalX);
+      y4 = (posY - (haut+1)*decalY);
+      mur->niveau[cpt].p4 = PointXY( x4,y4 );
         
         printf("\n");
       printf("%d - Les coordonnées de p1: x= %f  y= %f \n",cpt, mur->niveau[cpt].p1.x, mur->niveau[cpt].p1.y );
@@ -106,27 +108,17 @@ void Placement(Wall mur, int limit){
         cpt++;
     }
   }
-
-      
-
-    
-
-    /*printf("\n");
-      printf(" limit/largeur = %f\n",limit/mur->largeur);*/
-
-    /*Placement des points p1 et p4*/
-      /*mur->niveau[cpt].p1 = PointXY( (2-limit + i*(limit/mur->largeur)), (limit/2 + limit/(2*mur->hauteur) - j*(limit/mur->hauteur)) );
-      mur->niveau[cpt].p4 = PointXY( (2-limit + i*(limit/mur->largeur)), (limit/2 + limit/(2*mur->hauteur) - (j+1)*(limit/mur->hauteur)) ); */
-  
-     /*Placement des points p2 et p3*/
-      /*mur->niveau[cpt].p2 = PointXY( (2-limit + (i+1)*(limit/mur->largeur)), (limit/2 + limit/(2*mur->hauteur) - j*(limit/mur->hauteur)) );
-      mur->niveau[cpt].p3 = PointXY( (2-limit + (i+1)*(limit/mur->largeur)), (limit/2 + limit/(2*mur->hauteur) - (j+1)*(limit/mur->hauteur)) );*/
-
-      
-      
-  
 }
 
+void drawBrik(Brik brik){
+  glBegin(GL_QUADS);
+          glColor3d( 255, 255, 0 );
+          glVertex2f(brik.p1.x, brik.p1.y);
+          glVertex2f(brik.p2.x, brik.p2.y);
+          glVertex2f(brik.p3.x, brik.p3.y);
+          glVertex2f(brik.p4.x, brik.p4.y);
+        glEnd();
+}
 
 void drawMur(Wall mur){
     
@@ -134,13 +126,7 @@ void drawMur(Wall mur){
     {
       if (mur->niveau[i].touche == 0)
       {
-        glBegin(GL_QUADS);
-          glColor3d( 255, 255, 0 );
-          glVertex2f(mur->niveau[i].p1.x, mur->niveau[i].p1.y);
-          glVertex2f(mur->niveau[i].p2.x, mur->niveau[i].p2.y);
-          glVertex2f(mur->niveau[i].p3.x, mur->niveau[i].p3.y);
-          glVertex2f(mur->niveau[i].p4.x, mur->niveau[i].p4.y);
-        glEnd();
+        drawBrik(mur->niveau[i]);
       }
     }     
 }
@@ -149,16 +135,47 @@ void drawMur(Wall mur){
   Vous pouvez néamoins les enlevés pour voir ce que fait la fonction*/
 
 int collision(Wall wall, Player j, Player adv){
-/*
-  Vector2D normal = Normalize(j->balles-> direction);
+
+  
   for (int i = 0; i < wall->hauteur * wall->largeur; i++)
   {
 
     if (wall->niveau[i].touche == 0)
     {
-      if ( ( (j->balles->position.y <= wall->niveau[i].p1.y+2  && j->balles->position.y >= wall->niveau[i].p2.y+2) && ( j->balles->position.x <= wall->niveau[i].p1.x-2 || j->balles->position.x >= wall->niveau[i].p3.x+2) )   ||     ( (j->balles->position.x >= wall->niveau[i].p1.x+2  && j->balles->position.x <= wall->niveau[i].p2.x+2) && ( j->balles->position.y >= wall->niveau[i].p1.y+2 || j->balles->position.y >= wall->niveau[i].p4.y+2) ) )
+      /*Balle arrivant par le bas*
+      if ()
       {
+        /*shoot vers le haut
+        shoot(j->balles); 
+        return 1;     
+      }*/
 
+      /*Balle arrivant par le haut*
+      if ()
+      {
+        /*shoot vers le haut*
+        shoot(j->balles); 
+        return 1;     
+      }*/
+
+    }
+
+    /*contactBrik(wall->niveau[i], j);*/
+  }
+
+  return 0;
+
+}
+
+
+void contactBrik (Brik brik, Player j){
+
+  /*Vector2D normal = Normalize(j->balles-> direction);
+
+  /*Balle arrivant par le coté droit
+  if ( j->balles->position.x <= brik.p2.x /* && j->balles->direction.x < 0  && j->balles->position.y <= brik.p2.y && j->balles->position.y >= brik.p3.y)
+      {
+        
         j->balles->direction.x = j->balles->direction.x * (-1);
 
 
@@ -167,46 +184,35 @@ int collision(Wall wall, Player j, Player adv){
             j->balles->direction.y = normal.y + fabs( normal.y - j->balles->direction.y); 
           }
 
+
+
         if (j->balles->position.y >= normal.y)
           {
             j->balles->direction.y = normal.y - fabs( normal.y - j->balles->direction.y); 
           }
 
-        wall->niveau[i].touche = 1;
-        if (wall->niveau[i].propriete == 1)
-        {
-          adv->vie--;
-        }
-
-        if (wall->niveau[i].propriete == 2)
-        {
-          j->vie++;
-        }
-
-        if (wall->niveau[i].propriete == 3)
-        {
-          if ( (j->balles->direction.y > 0 && j->barre->p1.y > 0) || (j->balles->direction.y < 0 && j->barre->p1.y < 0) || (adv->balles->direction.y > 0 && adv->barre->p1.y < 0) || (adv->balles->direction.y < 0 && adv->barre->p1.y > 0))
-          {
-            j->balles->direction = MultVector(j->balles->direction, 0.5);
-          }
-        }
-
-        if (wall->niveau[i].propriete == 3)
-        {
-          if ( (j->balles->direction.y > 0 && j->barre->p1.y < 0) || (j->balles->direction.y < 0 && j->barre->p1.y > 0) || (adv->balles->direction.y > 0 && j->barre->p1.y > 0) || (j->balles->direction.y < 0 && j->barre->p1.y < 0))
-          {
-            j->balles->direction = MultVector(j->balles->direction, 2);
-          }
-        }
-
-        shoot(j->balles);
-        return 1 ;
       }
-    }
-    
-  }
-  return 0;
-*/
+
+      /*Balle arrivant par le coté gauche
+      if ( j->balles->position.x >= brik.p1.x /*&& j->balles->direction.x > 0 && j->balles->position.y <= brik.p1.y && j->balles->position.y >= brik.p4.y)
+      {
+        
+        j->balles->direction.x = j->balles->direction.x * (-1);
+
+
+        if (j->balles->position.y <= normal.y)
+          {
+            j->balles->direction.y = normal.y + fabs( normal.y - j->balles->direction.y); 
+          }
+
+
+
+        if (j->balles->position.y >= normal.y)
+          {
+            j->balles->direction.y = normal.y - fabs( normal.y - j->balles->direction.y); 
+          }
+
+      }*/
 }
 
 
