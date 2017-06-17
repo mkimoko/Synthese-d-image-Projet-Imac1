@@ -127,7 +127,8 @@ void drawMur(Wall mur){
 
 int collision(Wall wall, Player j, Player adv){
 
-  
+  Vector2D normal = Normalize(j->balles-> direction);
+
   for (int i = 0; i < wall->hauteur * wall->largeur; i++)
   {
 
@@ -136,30 +137,71 @@ int collision(Wall wall, Player j, Player adv){
       /*Balle arrivant par le bas*/
       if (j->balles->direction.y > 0 && j->balles->position.y >= wall->niveau[i].p3.y-2 && j->balles->position.x <= wall->niveau[i].p3.x+2 && j->balles->position.x >= wall->niveau[i].p4.x-2)
       {
-        /*shoot vers le haut*/
+        /*shoot vers le bas*/
         shoot(j->balles);
         wall->niveau[i].touche = 1;
- 
+        printf("bas - élement = %de\n",i );
         return 1;     
       }
 
-      /*Balle arrivant par le haut*/
+      /*Balle arrivant par le haut*
       if (j->balles->direction.y < 0 && j->balles->position.y <= wall->niveau[i].p1.y+2 && j->balles->position.x <= wall->niveau[i].p2.x+2 && j->balles->position.x >= wall->niveau[i].p1.x-2)
       {
-        /*shoot vers le haut*/
-        shoot(j->balles); 
+        /*shoot vers le haut*
+        shoot(j->balles);
         wall->niveau[i].touche = 1;
-        printf("touche = %d\n",wall->niveau[i].touche );
-
+        
+        printf("haut - élement = %de\n",i );
         return 1;     
-      }
+      }*/
 
+      /*Balle arrivant par la gauche
+      if (j->balles->direction.x > 0 && j->balles->position.x >= wall->niveau[i].p1.x - 2 && j->balles->position.y <= wall->niveau[i].p1.y-2 && j->balles->position.y >= wall->niveau[i].p4.y+2)
+        {
+          j->balles->direction.x = j->balles->direction.x * (-1);
+
+
+          if (j->balles->position.y <= normal.y)
+            {
+              j->balles->direction.y = normal.y + fabs( normal.y - j->balles->direction.y); 
+            }
+
+
+
+          if (j->balles->position.y >= normal.y)
+            {
+              j->balles->direction.y = normal.y - fabs( normal.y - j->balles->direction.y); 
+            }
+        }*/
+
+
+      /*Balle arrivant par la droite*/
+      if (j->balles->direction.x < 0 && j->balles->position.x <= wall->niveau[i].p2.x + 2 && j->balles->position.y <= wall->niveau[i].p2.y-2 && j->balles->position.y >= wall->niveau[i].p3.y+2)
+        {
+          j->balles->direction.x = j->balles->direction.x * (-1);
+
+
+          if (j->balles->position.y <= normal.y)
+            {
+              j->balles->direction.y = normal.y - fabs( normal.y - j->balles->direction.y); 
+            }
+
+
+
+          if (j->balles->position.y >= normal.y)
+            {
+              j->balles->direction.y = normal.y + fabs( normal.y - j->balles->direction.y); 
+            }
+        }    
     }
 
   }
 
   return 0;
 }
+
+
+
 
 
 

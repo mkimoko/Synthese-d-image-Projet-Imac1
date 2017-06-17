@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
   gluOrtho2D(-1., 1., -1., 1.);                                                 
          
   /* Titre de la fenêtre */       
-  SDL_WM_SetCaption("S we begin this arkanopong ?!", NULL); 
+  SDL_WM_SetCaption("Shall we begin this arkanopong ?!", NULL); 
 
   /* demande à OpenGl 1 espace mémoire (< MAX) sur la CG pour placer nos textures
   glGenTextures(1, textures);
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
       format = GL_RED;
     break;
     case 3:
-      Ne gere pas les machines big-endian (`a confirmer...)
+      Ne gere pas les machines big-endian (`a confirmer...) 
       format = GL_RGB;
     break;
     case 4:
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
   Point2D position1 = PointXY(0,14.5); 
   Vector2D direction1 = VectorXY(0.4,-1);
   Color3f color = ColorRGB(255,255,255);   
-  Balles balles = BallFabrik(position1, direction1, color);              
+  Balles balles = BallFabrik(position1, direction1, color);               
 
   /***********************BARRE 1***********************/
 
@@ -148,13 +148,13 @@ int main(int argc, char** argv) {
 
   /* Boucle d'affichage */   
   int loop = 1;   
-  while(loop) {
+  while(loop) { 
     /* Récupération du temps au début de la boucle */        
-    Uint32 startTime = SDL_GetTicks();                   
+    Uint32 startTime = SDL_GetTicks();                          
       
     /* Placer ici le code de dessin */       
     glClear(GL_COLOR_BUFFER_BIT);       
-  
+   
 /************************MATRICE DU MUR************************/  
     glMatrixMode(GL_MODELVIEW);                
         glLoadIdentity();  
@@ -167,14 +167,14 @@ int main(int argc, char** argv) {
 
         glScalef(MYSCALE, MYSCALE, 1);    
         drawMur(mur);
-        collision(mur, j1, j2);
+        /*collision(mur, j1, j2);*/ 
         collision(mur, j2, j1);
         glPopMatrix();
 
         /** On dé-binde la texture 
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, 0); 
         Desactive le texturage 2D 
-        glDisable(GL_TEXTURE_2D);*/
+        glDisable(GL_TEXTURE_2D);*/ 
  
 
 /**********************FIN MATRICE DU MUR*********************/
@@ -191,13 +191,13 @@ int main(int argc, char** argv) {
     glScalef(MYSCALE, MYSCALE, 1);  
     moveBall(j1->balles);
     j1->balles->position = Translation(j1->balles->position, MultVector(j1->balles->direction, MYSCALE) );
-    limiteRepere(j1->balles, 1/MYSCALE);
+    limiteRepere(j1->balles, 1/MYSCALE); 
     glPushMatrix();
 
-    /* ********************MATRICE DE LA BARRE 1********************* */
+    /* ********************MATRICE DE LA BARRE 1********************* */ 
     glMatrixMode(GL_MODELVIEW);  
     glLoadIdentity();
-    glScalef(MYSCALE, MYSCALE, 1);
+    glScalef(MYSCALE, MYSCALE, 1);   
     drawBarre(j1->barre);
     moveBarre(j1->barre, boolean);
     glPopMatrix();
